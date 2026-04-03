@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>CEK STATUS TRANSAKSI</title>
+  <title>CEK STATUS PESANAN</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -117,6 +117,18 @@
       renderTable();
     }
 
+    function formatTanggal(tanggalString) {
+      if (!tanggalString) return "";
+      try {
+        const date = new Date(tanggalString);
+        if (isNaN(date)) return tanggalString;
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('id-ID', options);
+      } catch {
+        return tanggalString;
+      }
+    }
+
     function renderTable() {
       if (currentData.length === 0) {
         document.getElementById("result").innerHTML = "<p style='text-align:center;'>TIDAK ADA DATA DITEMUKAN.</p>";
@@ -140,6 +152,12 @@
           let cellValue = row[h];
           let cellClass = "";
 
+          // format tanggal
+          if (h.toLowerCase().includes("tanggal")) {
+            cellValue = formatTanggal(cellValue);
+          }
+
+          // warna status
           if (h.toLowerCase() === "status") {
             switch(cellValue.toUpperCase()) {
               case "SELESAI": cellClass = "status-selesai"; break;
