@@ -116,8 +116,10 @@
         return;
       }
 
+      // filter agar UID dan Nomor tidak ditampilkan
+      const headers = Object.keys(currentData[0]).filter(h => h !== "UID" && h !== "Nomor");
+
       let table = "<table class='fade-in'><thead><tr>";
-      const headers = Object.keys(currentData[0]).filter(h => h !== "UID" && h !== "Nomor"); // filter UID & Nomor
       headers.forEach(h => table += `<th onclick="sortTable('${h}')">${h}</th>`);
       table += "</tr></thead><tbody>";
 
