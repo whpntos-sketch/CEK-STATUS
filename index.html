@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>CEK STATUS TRANSAKSI</title>
+  <title>CEK STATUS PESANAN</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,7 +23,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       width: 250px;
-      max-width: 90%;
     }
     button {
       padding: 10px 20px;
@@ -35,48 +34,43 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    button:hover { background: #0056b3; }
-    #loading {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-      color: #007BFF;
+    button:hover {
+      background: #0056b3;
     }
-    .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #007BFF;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
     table {
-      width: 95%;
+      width: 90%;
       margin: 20px auto;
       border-collapse: collapse;
       background: white;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-transform: uppercase;
+      text-transform: uppercase; /* semua teks jadi kapital */
     }
     th, td {
       padding: 12px;
       text-align: center;
       border-bottom: 1px solid #eee;
-      font-size: 14px;
     }
     th {
       background: #007BFF;
       color: white;
       cursor: pointer;
     }
-    tr:hover { background: #f1f9ff; }
-    .fade-in { animation: fadeIn 0.5s ease-in; }
-    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-    .pagination { margin: 20px; text-align: center; }
+    tr:hover {
+      background: #f1f9ff;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from {opacity:0;}
+      to {opacity:1;}
+    }
+    .pagination {
+      margin: 20px;
+      text-align: center;
+    }
     .pagination button {
       margin: 2px;
       padding: 8px 14px;
@@ -87,19 +81,15 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    .pagination button:hover { background: #0099cc; }
+    .pagination button:hover {
+      background: #0099cc;
+    }
 
-    / Warna status /
+    /* Warna status */
     .status-selesai { background-color: #d4edda; color: #155724; font-weight: bold; }
     .status-pemesanan { background-color: #fff3cd; color: #856404; font-weight: bold; }
     .status-backorder { background-color: #f8d7da; color: #721c24; font-weight: bold; }
     .status-readi { background-color: #d1ecf1; color: #0c5460; font-weight: bold; }
-
-    / Responsive /
-    @media (max-width: 600px) {
-      th, td { font-size: 12px; padding: 8px; }
-      input, button { width: 90%; margin: 5px auto; display: block; }
-    }
   </style>
 </head>
 <body>
@@ -107,46 +97,24 @@
     <h1>CEK STATUS TRANSAKSI</h1>
     <input type="text" id="telepon" placeholder="MASUKKAN NOMOR TELEPON">
     <button onclick="cekStatus()">CEK</button>
-    <div id="loading"></div>
-    <p style="font-size:12px;">Total pengecekan: <span id="analytics">0</span></p>
   </header>
   <div id="result"></div>
 
   <script>
-    const APIURL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y0bnqSP_QhgrZlAWdw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 
     let currentPage = 1;
     const rowsPerPage = 5;
     let currentData = [];
-    let analyticsCount = 0;
 
     async function cekStatus() {
-      const telepon = document.getElementById("telepon").value.trim();
-
-      // Validasi nomor telepon otomatis
-      if (!/^[0-9]{10,}$/.test(telepon)) {
-        alert("Nomor telepon harus berupa angka minimal 10 digit.");
-        return;
-      }
-
-      // Tambah analytics
-      analyticsCount++;
-      document.getElementById("analytics").innerText = analyticsCount;
-
-      // Loading spinner
-      document.getElementById("loading").innerHTML = '<div class="spinner"></div><p>Harap menunggu...</p>';
-
-      try {
-        const res = await fetch(${API_URL}?telepon=${telepon});
-        const data = await res.json();
-        currentData = data;
-        currentPage = 1;
-        renderTable();
-      } catch (err) {
-        document.getElementById("result").innerHTML = "<p style='text-align:center;color:red;'>GAGAL MENGAMBIL DATA.</p>";
-      } finally {
-        document.getElementById("loading").innerHTML = "";
-      }
+      const telepon = document.getElementById("telepon").value;
+      if (!telepon) return alert("MASUKKAN NOMOR TELEPON!");
+      const res = await fetch(`${API_URL}?telepon=${telepon}`);
+      const data = await res.json();
+      currentData = data;
+      currentPage = 1;
+      renderTable();
     }
 
     function formatTanggal(tanggalString) {
@@ -167,10 +135,11 @@
         return;
       }
 
+      // filter agar UID dan Nomor tidak ditampilkan
       const headers = Object.keys(currentData[0]).filter(h => h !== "UID" && h !== "Nomor");
 
       let table = "<table class='fade-in'><thead><tr>";
-      headers.forEach(h => table += <th onclick="sortTable('${h}')">${h}</th>);
+      headers.forEach(h => table += `<th onclick="sortTable('${h}')">${h}</th>`);
       table += "</tr></thead><tbody>";
 
       const start = (currentPage - 1) * rowsPerPage;
@@ -183,10 +152,12 @@
           let cellValue = row[h];
           let cellClass = "";
 
+          // format tanggal
           if (h.toLowerCase().includes("tanggal")) {
             cellValue = formatTanggal(cellValue);
           }
 
+          // warna status
           if (h.toLowerCase() === "status") {
             switch(cellValue.toUpperCase()) {
               case "SELESAI": cellClass = "status-selesai"; break;
@@ -196,7 +167,7 @@
             }
           }
 
-          table += <td class="${cellClass}">${cellValue}</td>;
+          table += `<td class="${cellClass}">${cellValue}</td>`;
         });
         table += "</tr>";
       });
@@ -215,7 +186,7 @@
       const totalPages = Math.ceil(currentData.length / rowsPerPage);
       let buttons = "<div class='pagination'>";
       for (let i = 1; i <= totalPages; i++) {
-        buttons += <button onclick="goToPage(${i})">${i}</button>;
+        buttons += `<button onclick="goToPage(${i})">${i}</button>`;
       }
       buttons += "</div>";
       return buttons;
