@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Cek Status Transaksi</title>
+  <title>CEK STATUS TRANSAKSI</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -45,6 +45,7 @@
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-transform: uppercase; /* semua teks jadi kapital */
     }
     th, td {
       padding: 12px;
@@ -83,13 +84,19 @@
     .pagination button:hover {
       background: #0099cc;
     }
+
+    /* Warna status */
+    .status-selesai { background-color: #d4edda; color: #155724; font-weight: bold; }
+    .status-pemesanan { background-color: #fff3cd; color: #856404; font-weight: bold; }
+    .status-backorder { background-color: #f8d7da; color: #721c24; font-weight: bold; }
+    .status-readi { background-color: #d1ecf1; color: #0c5460; font-weight: bold; }
   </style>
 </head>
 <body>
   <header>
-    <h1>Cek Status Transaksi</h1>
-    <input type="text" id="telepon" placeholder="Masukkan Nomor Telepon">
-    <button onclick="cekStatus()">Cek</button>
+    <h1>CEK STATUS TRANSAKSI</h1>
+    <input type="text" id="telepon" placeholder="MASUKKAN NOMOR TELEPON">
+    <button onclick="cekStatus()">CEK</button>
   </header>
   <div id="result"></div>
 
@@ -102,7 +109,7 @@
 
     async function cekStatus() {
       const telepon = document.getElementById("telepon").value;
-      if (!telepon) return alert("Masukkan nomor telepon!");
+      if (!telepon) return alert("MASUKKAN NOMOR TELEPON!");
       const res = await fetch(`${API_URL}?telepon=${telepon}`);
       const data = await res.json();
       currentData = data;
@@ -112,7 +119,7 @@
 
     function renderTable() {
       if (currentData.length === 0) {
-        document.getElementById("result").innerHTML = "<p style='text-align:center;'>Tidak ada data ditemukan.</p>";
+        document.getElementById("result").innerHTML = "<p style='text-align:center;'>TIDAK ADA DATA DITEMUKAN.</p>";
         return;
       }
 
@@ -129,7 +136,21 @@
 
       pageData.forEach(row => {
         table += "<tr>";
-        headers.forEach(h => table += `<td>${row[h]}</td>`);
+        headers.forEach(h => {
+          let cellValue = row[h];
+          let cellClass = "";
+
+          if (h.toLowerCase() === "status") {
+            switch(cellValue.toUpperCase()) {
+              case "SELESAI": cellClass = "status-selesai"; break;
+              case "PEMESANAN": cellClass = "status-pemesanan"; break;
+              case "BACKORDER": cellClass = "status-backorder"; break;
+              case "READI": cellClass = "status-readi"; break;
+            }
+          }
+
+          table += `<td class="${cellClass}">${cellValue}</td>`;
+        });
         table += "</tr>";
       });
 
