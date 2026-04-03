@@ -26,7 +26,8 @@
   <div id="result"></div>
 
   <script>
-    const API_URL = "PASTE_URL_APPS_SCRIPT_HERE"; // ganti dengan URL Web App
+    const API_URL = https://script.google.com/macros/s/AKfycbzhxsqQ5musCPM1JbSa3su5GkFXLM0n805Z7l5NJFNYHeMVh1gzrQxNNE7_ADdY6bcWYw/exec
+; // ganti dengan URL Web App
 
     let currentPage = 1;
     const rowsPerPage = 5;
