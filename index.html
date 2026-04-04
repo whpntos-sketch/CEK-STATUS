@@ -16,16 +16,15 @@
   --warning:#ca8a04;
   --danger:#dc2626;
   --info:#0284c7;
-
   --bg:#f1f5f9;
   --card:#ffffff;
   --text:#0f172a;
   --muted:#64748b;
-
   --radius:16px;
   --shadow:0 24px 48px rgba(0,0,0,.08);
 }
 
+/* RESET */
 *{box-sizing:border-box}
 
 body{
@@ -40,16 +39,8 @@ header{
   padding:56px 20px 80px;
   text-align:center;
 }
-
-header h1{
-  margin:0;
-  font-size:2.2rem;
-}
-
-header p{
-  margin-top:10px;
-  color:var(--muted);
-}
+header h1{margin:0;font-size:2.2rem}
+header p{margin-top:10px;color:var(--muted)}
 
 /* SEARCH */
 .search-card{
@@ -60,20 +51,14 @@ header p{
   border-radius:var(--radius);
   box-shadow:var(--shadow);
 }
-
-.search-box{
-  display:flex;
-  gap:12px;
-}
+.search-box{display:flex;gap:12px}
 
 input{
   flex:1;
   padding:14px 18px;
   border-radius:12px;
   border:1px solid #e2e8f0;
-  font-size:.95rem;
 }
-
 input:focus{
   outline:none;
   border-color:var(--primary);
@@ -88,10 +73,6 @@ button{
   color:white;
   font-weight:600;
   cursor:pointer;
-}
-
-button:hover{
-  opacity:.95;
 }
 
 /* CONTENT */
@@ -138,31 +119,45 @@ th,td{
   white-space:nowrap;
 }
 
+/* HEADER TETAP TABLE CELL */
 th{
   background:#eef2ff;
   color:#1e3a8a;
   font-weight:700;
   cursor:pointer;
+  display:table-cell;
+  vertical-align:middle;
 }
 
-/* FLEXIBLE & WRAP UNTUK KOLOM KETERANGAN */
+/* ================================
+    UX ALIGN MIDDLE – SEMUA KOLOM
+   ================================ */
+td{
+  display:flex;                 /* penting */
+  align-items:center;           /* vertical middle */
+  justify-content:center;       /* horizontal middle */
+}
+
+/* KETERANGAN – FLEXIBLE & WRAP */
 td.keterangan{
+  justify-content:flex-start;   /* teks rata kiri */
+  align-items:center;           /* tetap middle */
   white-space:normal;
-  text-align:left;
   max-width:420px;
   line-height:1.45;
   word-break:break-word;
   overflow-wrap:anywhere;
 }
 
-/* STATUS */
+/* STATUS BADGE */
 td[class^="status-"]{
+  justify-content:center;
   font-weight:700;
   text-transform:uppercase;
   border-radius:999px;
   padding:6px 14px;
   font-size:.75rem;
-  display:inline-block;
+  display:inline-flex;
 }
 
 .status-selesai{background:#dcfce7;color:#16a34a}
@@ -182,17 +177,20 @@ td[class^="status-"]{
   background:#e5e7eb;
   color:#0f172a;
 }
-
 .pagination button.active{
   background:var(--primary-gradient);
   color:white;
 }
+
+/* ROW HEIGHT CONSISTENCY */
+tr{min-height:56px}
 
 /* ANIMATION */
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:600px){
   .search-box{flex-direction:column}
+  td{padding:12px 14px}
 }
 </style>
 </head>
@@ -253,7 +251,6 @@ function normalizeStatus(v){
 async function cekStatus(){
   const t=telInput.value;
   if(t.length<8)return showMessage("Nomor telepon tidak valid");
-
   showLoader();
   try{
     const r=await fetch(`${API_URL}?telepon=${t}`);
@@ -282,7 +279,7 @@ function render(){
   rows.forEach(r=>{
     html+=`<tr>`;
     headers.forEach(k=>{
-      let v=r[k]??"", cls="";
+      let v=r[k]??"",cls="";
       if(k.toLowerCase().includes("tanggal"))v=formatDate(v);
       if(k.toLowerCase()==="status")cls=STATUS_MAP[normalizeStatus(v)]||"";
       const isKet=k.toLowerCase().includes("keterangan");
@@ -302,7 +299,7 @@ function sortBy(k){
   const asc=STATE.sort[k];
   STATE.data.sort((a,b)=>
     asc?String(a[k]).localeCompare(String(b[k])):
-         String(b[k]).localeCompare(String(a[k]))
+        String(b[k]).localeCompare(String(a[k]))
   );
   render();
 }
