@@ -9,188 +9,196 @@
 <meta name="robots" content="noindex,nofollow">
 
 <style>
-:root{
+:root {
   --primary:#2563eb;
-  --primary-gradient:linear-gradient(135deg,#2563eb,#3b82f6);
-  --success:#16a34a;
-  --warning:#ca8a04;
-  --danger:#dc2626;
-  --info:#0284c7;
-  --bg:#f1f5f9;
+  --primary-soft:#eff6ff;
+  --bg:#f8fafc;
   --card:#ffffff;
   --text:#0f172a;
   --muted:#64748b;
-  --radius:16px;
-  --shadow:0 24px 48px rgba(0,0,0,.08);
+  --radius:14px;
 }
 
-/* RESET */
 *{box-sizing:border-box}
 
 body{
   margin:0;
   font-family:Inter,"Segoe UI",system-ui,sans-serif;
-  background:radial-gradient(circle at top,#e0e7ff,#f8fafc 60%);
+  background:var(--bg);
   color:var(--text);
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 header{
-  padding:56px 20px 80px;
+  padding:48px 20px 64px;
   text-align:center;
 }
-header h1{margin:0;font-size:2.2rem}
-header p{margin-top:10px;color:var(--muted)}
 
-/* SEARCH */
-.search-card{
-  max-width:540px;
-  margin:-56px auto 32px;
-  background:var(--card);
-  padding:26px;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
+header h1{
+  margin:0;
+  font-size:2rem;
+  letter-spacing:1px;
 }
-.search-box{display:flex;gap:12px}
+
+header p{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:.95rem;
+}
+
+/* ===== SEARCH ===== */
+.search-card{
+  max-width:520px;
+  margin:-40px auto 24px;
+  background:var(--card);
+  padding:24px;
+  border-radius:var(--radius);
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.search-box{
+  display:flex;
+  gap:10px;
+}
 
 input{
   flex:1;
-  padding:14px 18px;
-  border-radius:12px;
+  padding:14px 16px;
+  border-radius:10px;
   border:1px solid #e2e8f0;
+  font-size:.95rem;
 }
+
 input:focus{
   outline:none;
   border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,.15);
 }
 
 button{
-  padding:14px 24px;
-  border-radius:12px;
+  padding:14px 22px;
+  border-radius:10px;
   border:none;
-  background:var(--primary-gradient);
+  background:var(--primary);
   color:white;
   font-weight:600;
   cursor:pointer;
 }
 
-/* CONTENT */
+button:hover{opacity:.9}
+
+/* ===== CONTENT ===== */
 .container{
   max-width:1100px;
   margin:auto;
-  padding:0 16px 72px;
+  padding:0 16px 64px;
 }
 
 .message{
   text-align:center;
   color:var(--muted);
-  padding:36px 0;
+  font-weight:500;
+  padding:32px 0;
 }
 
-/* LOADER */
+/* ===== LOADER ===== */
 .loader{
-  width:46px;
-  height:46px;
-  border:4px solid #e5e7eb;
-  border-top:4px solid #2563eb;
+  width:40px;
+  height:40px;
+  border:4px solid #e2e8f0;
+  border-top:4px solid var(--primary);
   border-radius:50%;
-  margin:28px auto;
+  margin:20px auto;
   animation:spin 1s linear infinite;
 }
 
-/* TABLE */
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* ===== TABLE ===== */
 .table-card{
   background:var(--card);
   border-radius:var(--radius);
-  box-shadow:var(--shadow);
+  box-shadow:0 16px 32px rgba(0,0,0,.06);
   overflow-x:auto;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:.88rem;
+  font-size:.85rem;
 }
 
 th,td{
-  padding:14px 18px;
+  padding:14px 16px;
   text-align:center;
-  white-space:nowrap;
 }
 
-/* HEADER TETAP TABLE CELL */
 th{
-  background:#eef2ff;
-  color:#1e3a8a;
+  background:var(--primary-soft);
+  color:var(--primary);
   font-weight:700;
   cursor:pointer;
-  display:table-cell;
-  vertical-align:middle;
 }
 
-/* ================================
-    UX ALIGN MIDDLE – SEMUA KOLOM
-   ================================ */
-td{
-  display:flex;                 /* penting */
-  align-items:center;           /* vertical middle */
-  justify-content:center;       /* horizontal middle */
-}
+tbody tr:hover{background:#f1f5f9}
 
-/* KETERANGAN – FLEXIBLE & WRAP */
-td.keterangan{
-  justify-content:flex-start;   /* teks rata kiri */
-  align-items:center;           /* tetap middle */
-  white-space:normal;
-  max-width:420px;
-  line-height:1.45;
-  word-break:break-word;
-  overflow-wrap:anywhere;
-}
-
-/* STATUS BADGE */
+/* ===== STATUS HIGHLIGHT ===== */
 td[class^="status-"]{
-  justify-content:center;
   font-weight:700;
   text-transform:uppercase;
-  border-radius:999px;
-  padding:6px 14px;
-  font-size:.75rem;
-  display:inline-flex;
+  border-radius:8px;
+  padding:8px 12px;
 }
 
-.status-selesai{background:#dcfce7;color:#16a34a}
-.status-pemesanan{background:#fef9c3;color:#ca8a04}
-.status-backorder{background:#fee2e2;color:#dc2626}
-.status-ready{background:#dbeafe;color:#0284c7}
+/* HIJAU - SELESAI */
+.status-selesai{
+  background:#dcfce7;
+  color:#15803d;
+}
 
-/* PAGINATION */
+/* KUNING - PEMESANAN */
+.status-pemesanan{
+  background:#fef9c3;
+  color:#92400e;
+}
+
+/* MERAH - BACKORDER */
+.status-backorder{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+/* BIRU - READI */
+.status-ready{
+  background:#dbeafe;
+  color:#1e40af;
+}
+
+/* ===== PAGINATION ===== */
 .pagination{
   display:flex;
   justify-content:center;
-  gap:8px;
-  padding:24px;
+  gap:6px;
+  padding:20px;
 }
 
 .pagination button{
-  background:#e5e7eb;
-  color:#0f172a;
+  background:#e2e8f0;
+  color:var(--text);
+  border-radius:8px;
+  padding:8px 14px;
 }
+
 .pagination button.active{
-  background:var(--primary-gradient);
-  color:white;
+  background:var(--primary);
+  color:#fff;
 }
 
-/* ROW HEIGHT CONSISTENCY */
-tr{min-height:56px}
-
-/* ANIMATION */
-@keyframes spin{to{transform:rotate(360deg)}}
-
+/* ===== MOBILE ===== */
 @media(max-width:600px){
+  header h1{font-size:1.6rem}
   .search-box{flex-direction:column}
-  td{padding:12px 14px}
 }
 </style>
 </head>
@@ -204,10 +212,14 @@ tr{min-height:56px}
 
 <div class="search-card">
   <div class="search-box">
-    <input id="telepon" type="tel" maxlength="15"
+    <input
+      id="telepon"
+      type="tel"
+      maxlength="15"
       placeholder="Nomor Telepon"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
-    <button onclick="cekStatus()">Cek</button>
+      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+    />
+    <button onclick="cekStatus()">PERIKSA</button>
   </div>
 </div>
 
@@ -216,74 +228,93 @@ tr{min-height:56px}
 </div>
 
 <script>
-/* CONFIG */
-const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
-const ROWS=5;
+/* ================= CONFIG ================= */
+const API_URL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
+const ROWS = 5;
 
-/* STATE */
-let STATE={data:[],page:1,sort:{}};
+/* ================= STATE ================= */
+let STATE = {
+  data: [],
+  page: 1,
+  sort: {}
+};
 
-const STATUS_MAP={
+/* ================= UTILS ================= */
+const STATUS_MAP = {
   selesai:"status-selesai",
   pemesanan:"status-pemesanan",
   backorder:"status-backorder",
   ready:"status-ready"
 };
 
-const result=document.getElementById("result");
-const telInput=document.getElementById("telepon");
+const result = document.getElementById("result");
+const telInput = document.getElementById("telepon");
 
-telInput.addEventListener("keydown",e=>e.key==="Enter"&&cekStatus());
+telInput.addEventListener("keydown", e => e.key==="Enter" && cekStatus());
 
-function showMessage(t){result.innerHTML=`<div class="message">${t}</div>`}
-function showLoader(){result.innerHTML=`<div class="loader"></div>`}
+function showMessage(text){
+  result.innerHTML = `<div class="message">${text}</div>`;
+}
 
-function formatDate(v){
-  const d=new Date(v);
-  return isNaN(d)?v:d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+function showLoader(){
+  result.innerHTML = `<div class="loader"></div>`;
 }
 
 function normalizeStatus(v){
-  return v.toLowerCase().replace(/\s+/g,"").replace("readi","ready");
+  return v
+    .toLowerCase()
+    .replace(/\s+/g,"")
+    .replace("readi","ready");
 }
 
-/* FETCH */
+function formatDate(v){
+  const d = new Date(v);
+  return isNaN(d) ? v :
+    d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+}
+
+/* ================= FETCH ================= */
 async function cekStatus(){
-  const t=telInput.value;
-  if(t.length<8)return showMessage("Nomor telepon tidak valid");
+  const t = telInput.value;
+  if(t.length < 8) return showMessage("Nomor telepon tidak valid");
+
   showLoader();
+
   try{
-    const r=await fetch(`${API_URL}?telepon=${t}`);
-    const j=await r.json();
-    STATE.data=Array.isArray(j)?j:[];
-    STATE.page=1;
+    const r = await fetch(`${API_URL}?telepon=${t}`);
+    const j = await r.json();
+    STATE.data = Array.isArray(j) ? j : [];
+    STATE.page = 1;
     render();
   }catch{
     showMessage("Gagal mengambil data");
   }
 }
 
-/* RENDER */
+/* ================= RENDER ================= */
 function render(){
-  if(!STATE.data.length)return showMessage("Data tidak ditemukan");
+  if(!STATE.data.length)
+    return showMessage("Data tidak ditemukan");
 
-  const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
-  const start=(STATE.page-1)*ROWS;
-  const rows=STATE.data.slice(start,start+ROWS);
+  const headers = Object.keys(STATE.data[0])
+    .filter(h=>!["UID","Nomor"].includes(h));
 
-  let html=`<div class="message">Ditemukan <b>${STATE.data.length}</b> data</div>`;
-  html+=`<div class="table-card"><table><thead><tr>`;
+  const start = (STATE.page-1)*ROWS;
+  const slice = STATE.data.slice(start,start+ROWS);
+
+  let html = `<div class="table-card"><table><thead><tr>`;
   headers.forEach(h=>html+=`<th onclick="sortBy('${h}')">${h}</th>`);
   html+=`</tr></thead><tbody>`;
 
-  rows.forEach(r=>{
+  slice.forEach(r=>{
     html+=`<tr>`;
     headers.forEach(k=>{
-      let v=r[k]??"",cls="";
-      if(k.toLowerCase().includes("tanggal"))v=formatDate(v);
-      if(k.toLowerCase()==="status")cls=STATUS_MAP[normalizeStatus(v)]||"";
-      const isKet=k.toLowerCase().includes("keterangan");
-      html+=`<td class="${cls} ${isKet?'keterangan':''}" title="${v}">${v}</td>`;
+      let v=r[k] ?? "";
+      let cls="";
+      if(k.toLowerCase().includes("tanggal")) v=formatDate(v);
+      if(k.toLowerCase()==="status")
+        cls=STATUS_MAP[normalizeStatus(v)]||"";
+      html+=`<td class="${cls}">${v}</td>`;
     });
     html+=`</tr>`;
   });
@@ -293,30 +324,42 @@ function render(){
   result.innerHTML=html;
 }
 
-/* SORT */
+/* ================= SORT ================= */
 function sortBy(k){
   STATE.sort[k]=!STATE.sort[k];
   const asc=STATE.sort[k];
-  STATE.data.sort((a,b)=>
-    asc?String(a[k]).localeCompare(String(b[k])):
-        String(b[k]).localeCompare(String(a[k]))
-  );
+  STATE.data.sort((a,b)=>{
+    const x=a[k],y=b[k];
+    if(!isNaN(x)&&!isNaN(y)) return asc?x-y:y-x;
+    return asc
+      ? String(x).localeCompare(String(y))
+      : String(y).localeCompare(String(x));
+  });
   render();
 }
 
-/* PAGINATION */
+/* ================= PAGINATION ================= */
 function pagination(){
   const pages=Math.ceil(STATE.data.length/ROWS);
   let h=`<div class="pagination">`;
-  if(STATE.page>1)h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
+
+  if(STATE.page>1)
+    h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
+
   for(let i=1;i<=pages;i++)
     h+=`<button class="${i===STATE.page?'active':''}"
       onclick="goto(${i})">${i}</button>`;
-  if(STATE.page<pages)h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
+
+  if(STATE.page<pages)
+    h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
+
   return h+`</div>`;
 }
 
-function goto(p){STATE.page=p;render()}
+function goto(p){
+  STATE.page=p;
+  render();
+}
 </script>
 
 </body>
