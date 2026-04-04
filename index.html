@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.5" />
 <title>PERIKSA STATUS PESANAN</title>
 
 <meta name="description" content="PERIKSA STATUS PESANAN">
@@ -276,7 +276,7 @@ function formatDate(v){
 /* ================= FETCH ================= */
 async function cekStatus(){
   const t = telInput.value;
-  if(t.length < 8) return showMessage("NOMOR TELEPON TIDAK VALID");
+  if(t.length < 8) return showMessage("INPUT NOMOR TELEPON DENGAN BENAR");
 
   showLoader();
 
@@ -294,7 +294,7 @@ async function cekStatus(){
 /* ================= RENDER ================= */
 function render(){
   if(!STATE.data.length)
-    return showMessage("DATA TIDAK DITEMUKAN");
+    return showMessage("DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
 
   const headers = Object.keys(STATE.data[0])
     .filter(h=>!["UID","Nomor"].includes(h));
