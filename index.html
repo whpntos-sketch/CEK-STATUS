@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STATUS PESANAN</title>
 
-<meta name="description" content="cek status pesanan">
+<meta name="description" content="Cek status pesanan pelanggan">
 <meta name="robots" content="noindex,nofollow">
 
 <style>
@@ -143,11 +143,37 @@ th{
 
 tbody tr:hover{background:#f1f5f9}
 
-/* ===== STATUS ===== */
-.status-selesai{color:#15803d;font-weight:700}
-.status-pemesanan{color:#b45309;font-weight:700}
-.status-backorder{color:#b91c1c;font-weight:700}
-.status-ready{color:#0369a1;font-weight:700}
+/* ===== STATUS HIGHLIGHT ===== */
+td[class^="status-"]{
+  font-weight:700;
+  text-transform:uppercase;
+  border-radius:8px;
+  padding:8px 12px;
+}
+
+/* HIJAU - SELESAI */
+.status-selesai{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+/* KUNING - PEMESANAN */
+.status-pemesanan{
+  background:#fef9c3;
+  color:#92400e;
+}
+
+/* MERAH - BACKORDER */
+.status-backorder{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+/* BIRU - READI */
+.status-ready{
+  background:#dbeafe;
+  color:#1e40af;
+}
 
 /* ===== PAGINATION ===== */
 .pagination{
@@ -186,9 +212,13 @@ tbody tr:hover{background:#f1f5f9}
 
 <div class="search-card">
   <div class="search-box">
-    <input id="telepon" type="tel" maxlength="15"
+    <input
+      id="telepon"
+      type="tel"
+      maxlength="15"
       placeholder="Nomor Telepon"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+    />
     <button onclick="cekStatus()">Cek</button>
   </div>
 </div>
@@ -222,8 +252,8 @@ const telInput = document.getElementById("telepon");
 
 telInput.addEventListener("keydown", e => e.key==="Enter" && cekStatus());
 
-function showMessage(html){
-  result.innerHTML = `<div class="message">${html}</div>`;
+function showMessage(text){
+  result.innerHTML = `<div class="message">${text}</div>`;
 }
 
 function showLoader(){
@@ -231,7 +261,10 @@ function showLoader(){
 }
 
 function normalizeStatus(v){
-  return v.toLowerCase().replace(/\s+/g,"");
+  return v
+    .toLowerCase()
+    .replace(/\s+/g,"")
+    .replace("readi","ready");
 }
 
 function formatDate(v){
@@ -267,40 +300,36 @@ function render(){
     .filter(h=>!["UID","Nomor"].includes(h));
 
   const start = (STATE.page-1)*ROWS;
-  const end = STATE.page*ROWS;
-  const slice = STATE.data.slice(start,end);
+  const slice = STATE.data.slice(start,start+ROWS);
 
   let html = `<div class="table-card"><table><thead><tr>`;
-  headers.forEach(h=> html += `<th onclick="sortBy('${h}')">${h}</th>`);
-  html += `</tr></thead><tbody>`;
+  headers.forEach(h=>html+=`<th onclick="sortBy('${h}')">${h}</th>`);
+  html+=`</tr></thead><tbody>`;
 
   slice.forEach(r=>{
-    html += `<tr>`;
+    html+=`<tr>`;
     headers.forEach(k=>{
-      let v = r[k] ?? "";
-      let cls = "";
-      if(k.toLowerCase().includes("tanggal")) v = formatDate(v);
-      if(k.toLowerCase()==="status"){
-        cls = STATUS_MAP[normalizeStatus(v)] || "";
-      }
-      html += `<td class="${cls}">${v}</td>`;
+      let v=r[k] ?? "";
+      let cls="";
+      if(k.toLowerCase().includes("tanggal")) v=formatDate(v);
+      if(k.toLowerCase()==="status")
+        cls=STATUS_MAP[normalizeStatus(v)]||"";
+      html+=`<td class="${cls}">${v}</td>`;
     });
-    html += `</tr>`;
+    html+=`</tr>`;
   });
 
-  html += `</tbody></table></div>`;
-  html += pagination();
-
-  result.innerHTML = html;
+  html+=`</tbody></table></div>`;
+  html+=pagination();
+  result.innerHTML=html;
 }
 
 /* ================= SORT ================= */
 function sortBy(k){
   STATE.sort[k]=!STATE.sort[k];
-  const asc = STATE.sort[k];
-
+  const asc=STATE.sort[k];
   STATE.data.sort((a,b)=>{
-    const x=a[k], y=b[k];
+    const x=a[k],y=b[k];
     if(!isNaN(x)&&!isNaN(y)) return asc?x-y:y-x;
     return asc
       ? String(x).localeCompare(String(y))
