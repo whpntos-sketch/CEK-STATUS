@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Status Pesanan</title>
+<title>STATUS PESANAN</title>
 
 <meta name="description" content="Cek status pesanan pelanggan">
 <meta name="robots" content="noindex,nofollow">
@@ -26,7 +26,6 @@
   --shadow:0 24px 48px rgba(0,0,0,.08);
 }
 
-/* RESET */
 *{box-sizing:border-box}
 
 body{
@@ -45,7 +44,6 @@ header{
 header h1{
   margin:0;
   font-size:2.2rem;
-  letter-spacing:1px;
 }
 
 header p{
@@ -61,7 +59,6 @@ header p{
   padding:26px;
   border-radius:var(--radius);
   box-shadow:var(--shadow);
-  animation:fadeUp .6s ease;
 }
 
 .search-box{
@@ -75,7 +72,6 @@ input{
   border-radius:12px;
   border:1px solid #e2e8f0;
   font-size:.95rem;
-  transition:.25s;
 }
 
 input:focus{
@@ -92,12 +88,10 @@ button{
   color:white;
   font-weight:600;
   cursor:pointer;
-  transition:.25s;
 }
 
 button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 10px 22px rgba(37,99,235,.3);
+  opacity:.95;
 }
 
 /* CONTENT */
@@ -111,7 +105,6 @@ button:hover{
   text-align:center;
   color:var(--muted);
   padding:36px 0;
-  animation:fade .3s ease;
 }
 
 /* LOADER */
@@ -130,8 +123,7 @@ button:hover{
   background:var(--card);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
-  overflow:hidden;
-  animation:fadeUp .4s ease;
+  overflow-x:auto;
 }
 
 table{
@@ -153,17 +145,14 @@ th{
   cursor:pointer;
 }
 
-th:hover{
-  background:#e0e7ff;
-}
-
-tbody tr{
-  transition:.2s;
-}
-
-tbody tr:hover{
-  background:#f8fafc;
-  transform:scale(1.005);
+/* FLEXIBLE & WRAP UNTUK KOLOM KETERANGAN */
+td.keterangan{
+  white-space:normal;
+  text-align:left;
+  max-width:420px;
+  line-height:1.45;
+  word-break:break-word;
+  overflow-wrap:anywhere;
 }
 
 /* STATUS */
@@ -176,14 +165,10 @@ td[class^="status-"]{
   display:inline-block;
 }
 
-.status-selesai{background:#dcfce7;color:var(--success)}
-.status-pemesanan{background:#fef9c3;color:var(--warning)}
-.status-backorder{background:#fee2e2;color:var(--danger)}
-.status-ready{background:#dbeafe;color:var(--info)}
-
-.highlight{
-  background:#fff7ed!important;
-}
+.status-selesai{background:#dcfce7;color:#16a34a}
+.status-pemesanan{background:#fef9c3;color:#ca8a04}
+.status-backorder{background:#fee2e2;color:#dc2626}
+.status-ready{background:#dbeafe;color:#0284c7}
 
 /* PAGINATION */
 .pagination{
@@ -205,11 +190,8 @@ td[class^="status-"]{
 
 /* ANIMATION */
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
 
 @media(max-width:600px){
-  header h1{font-size:1.7rem}
   .search-box{flex-direction:column}
 }
 </style>
@@ -218,7 +200,7 @@ td[class^="status-"]{
 <body>
 
 <header>
-  <h1>Status Pesanan</h1>
+  <h1>STATUS PESANAN</h1>
   <p>Masukkan nomor telepon untuk melihat status pesanan Anda</p>
 </header>
 
@@ -228,10 +210,6 @@ td[class^="status-"]{
       placeholder="Nomor Telepon"
       oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
     <button onclick="cekStatus()">Cek</button>
-  </div>
-  <div style="text-align:center;margin-top:12px">
-    <button style="background:#e5e7eb;color:#0f172a"
-      onclick="resetSearch()">Reset</button>
   </div>
 </div>
 
@@ -247,7 +225,6 @@ const ROWS=5;
 /* STATE */
 let STATE={data:[],page:1,sort:{}};
 
-/* MAP */
 const STATUS_MAP={
   selesai:"status-selesai",
   pemesanan:"status-pemesanan",
@@ -260,52 +237,32 @@ const telInput=document.getElementById("telepon");
 
 telInput.addEventListener("keydown",e=>e.key==="Enter"&&cekStatus());
 
-/* UTILS */
 function showMessage(t){result.innerHTML=`<div class="message">${t}</div>`}
 function showLoader(){result.innerHTML=`<div class="loader"></div>`}
 
 function formatDate(v){
   const d=new Date(v);
-  return isNaN(d)?v:
-  d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+  return isNaN(d)?v:d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
 }
 
 function normalizeStatus(v){
   return v.toLowerCase().replace(/\s+/g,"").replace("readi","ready");
 }
 
-/* CACHE */
-const CACHE_TTL=300000;
-function setCache(k,d){
-  localStorage.setItem("cek-"+k,JSON.stringify({t:Date.now(),d}));
-}
-function getCache(k){
-  const c=localStorage.getItem("cek-"+k);
-  if(!c)return null;
-  const o=JSON.parse(c);
-  return Date.now()-o.t>CACHE_TTL?null:o.d;
-}
-
 /* FETCH */
 async function cekStatus(){
   const t=telInput.value;
-  if(t.length<8)return showMessage("Nomor tidak valid");
-
-  const c=getCache(t);
-  if(c){STATE.data=c;STATE.page=1;return render();}
+  if(t.length<8)return showMessage("Nomor telepon tidak valid");
 
   showLoader();
-  const controller=new AbortController();
-  setTimeout(()=>controller.abort(),8000);
-
   try{
-    const r=await fetch(`${API_URL}?telepon=${t}`,{signal:controller.signal});
+    const r=await fetch(`${API_URL}?telepon=${t}`);
     const j=await r.json();
     STATE.data=Array.isArray(j)?j:[];
-    setCache(t,STATE.data);
+    STATE.page=1;
     render();
   }catch{
-    showMessage("Koneksi bermasalah, coba lagi");
+    showMessage("Gagal mengambil data");
   }
 }
 
@@ -323,13 +280,13 @@ function render(){
   html+=`</tr></thead><tbody>`;
 
   rows.forEach(r=>{
-    html+=`<tr class="${Object.values(r).includes(telInput.value)?'highlight':''}">`;
+    html+=`<tr>`;
     headers.forEach(k=>{
-      let v=r[k]??"",cls="";
+      let v=r[k]??"", cls="";
       if(k.toLowerCase().includes("tanggal"))v=formatDate(v);
-      if(k.toLowerCase()==="status")
-        cls=STATUS_MAP[normalizeStatus(v)]||"";
-      html+=`<td class="${cls}">${v}</td>`;
+      if(k.toLowerCase()==="status")cls=STATUS_MAP[normalizeStatus(v)]||"";
+      const isKet=k.toLowerCase().includes("keterangan");
+      html+=`<td class="${cls} ${isKet?'keterangan':''}" title="${v}">${v}</td>`;
     });
     html+=`</tr>`;
   });
@@ -343,11 +300,10 @@ function render(){
 function sortBy(k){
   STATE.sort[k]=!STATE.sort[k];
   const asc=STATE.sort[k];
-  STATE.data.sort((a,b)=>{
-    return asc
-      ?String(a[k]).localeCompare(String(b[k]))
-      :String(b[k]).localeCompare(String(a[k]));
-  });
+  STATE.data.sort((a,b)=>
+    asc?String(a[k]).localeCompare(String(b[k])):
+         String(b[k]).localeCompare(String(a[k]))
+  );
   render();
 }
 
@@ -364,7 +320,6 @@ function pagination(){
 }
 
 function goto(p){STATE.page=p;render()}
-function resetSearch(){telInput.value="";STATE.data=[];result.innerHTML="";}
 </script>
 
 </body>
