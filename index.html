@@ -1,277 +1,201 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>STATUS PESANAN</title>
-
-<style>
-/* ================== GLOBAL ================== */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  background: #f2f4f8;
-  color: #2c2c2c;
-}
-
-header {
-  background: linear-gradient(135deg, #1f2937, #374151);
-  color: #f9fafb;
-  padding: 28px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-}
-
-header h1 {
-  margin-bottom: 16px;
-  letter-spacing: 1px;
-}
-
-/* ================== FORM ================== */
-input {
-  padding: 12px;
-  width: 260px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-}
-
-button {
-  padding: 12px 22px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #111827;
-  color: #f9fafb;
-  font-weight: 600;
-}
-
-button:hover {
-  background: #374151;
-}
-
-#result {
-  margin: 24px;
-  text-align: center;
-}
-
-/* ================== TABLE ================== */
-table {
-  width: 95%;
-  margin: auto;
-  border-collapse: collapse;
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-}
-
-th, td {
-  padding: 14px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: center;
-  font-size: 14px;
-}
-
-th {
-  background: #1f2937;
-  color: #f9fafb;
-  cursor: pointer;
-  user-select: none;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-th span {
-  font-size: 10px;
-  margin-left: 6px;
-}
-
-tr:hover {
-  background: #f9fafb;
-}
-
-/* ================== STATUS ================== */
-.status-selesai {
-  background: #e6f4ea;
-  color: #065f46;
-  font-weight: bold;
-}
-
-.status-pemesanan {
-  background: #fff7ed;
-  color: #9a3412;
-  font-weight: bold;
-}
-
-.status-backorder {
-  background: #fdecea;
-  color: #991b1b;
-  font-weight: bold;
-}
-
-.status-readi {
-  background: #e0f2fe;
-  color: #075985;
-  font-weight: bold;
-}
-
-/* ================== PAGINATION ================== */
-.pagination {
-  margin: 24px;
-}
-
-.pagination button {
-  margin: 4px;
-  padding: 8px 16px;
-  background: #374151;
-  border-radius: 8px;
-  color: #f9fafb;
-  font-size: 13px;
-}
-
-.pagination button:hover {
-  background: #111827;
-}
-
-/* ================== LOADING ================== */
-.loading {
-  font-weight: bold;
-  margin-top: 20px;
-  letter-spacing: 1px;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <h1>STATUS PESANAN</h1>
-  <input type="text" id="telepon" placeholder="CONTOH: 08123456789" />
-  <button onclick="cekStatus()">CEK STATUS</button>
-</header>
-
-<div id="result"></div>
-
-<script>
-/* ================== CONFIG ================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
-const API_KEY = "ISI_API_KEY_KAMU";
-
-const ROWS_PER_PAGE = 5;
-
-/* ================== STATE ================== */
-let dataGlobal = [];
-let currentPage = 1;
-let sortConfig = { key: null, asc: true };
-
-/* ================== VALIDATION ================== */
-function validTelepon(input) {
-  return /^[0-9]{9,14}$/.test(input);
-}
-
-/* ================== MAIN ================== */
-async function cekStatus() {
-  const telepon = document.getElementById("telepon").value.trim();
-  const result = document.getElementById("result");
-
-  if (!validTelepon(telepon)) {
-    alert("MASUKKAN NOMOR TELEPON YANG VALID (ANGKA SAJA)");
-    return;
-  }
-
-  result.innerHTML = "<div class='loading'>MEMUAT DATA...</div>";
-
-  try {
-    const res = await fetch(`${API_URL}?telepon=${telepon}&key=${API_KEY}`);
-    if (!res.ok) throw new Error("Gagal koneksi server");
-
-    const json = await res.json();
-    if (!Array.isArray(json) || json.length === 0) {
-      result.innerHTML = "<p>TIDAK ADA DATA DITEMUKAN</p>";
-      return;
+  <meta charset="UTF-8">
+  <title>CEK STATUS PESANAN</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #007BFF, #00C6FF);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 250px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-transform: uppercase; /* semua teks jadi kapital */
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    tr:hover {
+      background: #f1f9ff;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from {opacity:0;}
+      to {opacity:1;}
+    }
+    .pagination {
+      margin: 20px;
+      text-align: center;
+    }
+    .pagination button {
+      margin: 2px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #00C6FF;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .pagination button:hover {
+      background: #0099cc;
     }
 
-    dataGlobal = json;
-    currentPage = 1;
-    renderTable();
+    /* Warna status */
+    .status-selesai { background-color: #d4edda; color: #155724; font-weight: bold; }
+    .status-pemesanan { background-color: #fff3cd; color: #856404; font-weight: bold; }
+    .status-backorder { background-color: #f8d7da; color: #721c24; font-weight: bold; }
+    .status-readi { background-color: #d1ecf1; color: #0c5460; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CEK STATUS PESANAN</h1>
+    <input type="text" id="telepon" placeholder="MASUKKAN NOMOR TELEPON">
+    <button onclick="cekStatus()">CEK</button>
+  </header>
+  <div id="result"></div>
 
-  } catch (err) {
-    console.error(err);
-    result.innerHTML = "<p>TERJADI KESALAHAN, SILAKAN COBA LAGI</p>";
-  }
-}
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 
-/* ================== UTIL ================== */
-function formatTanggal(val) {
-  const d = new Date(val);
-  if (isNaN(d)) return val;
-  return d.toLocaleDateString("id-ID", { day:"2-digit", month:"long", year:"numeric" });
-}
+    let currentPage = 1;
+    const rowsPerPage = 5;
+    let currentData = [];
 
-/* ================== RENDER ================== */
-function renderTable() {
-  const result = document.getElementById("result");
+    async function cekStatus() {
+      const telepon = document.getElementById("telepon").value;
+      if (!telepon) return alert("MASUKKAN NOMOR TELEPON!");
+      const res = await fetch(`${API_URL}?telepon=${telepon}`);
+      const data = await res.json();
+      currentData = data;
+      currentPage = 1;
+      renderTable();
+    }
 
-  const headers = Object.keys(dataGlobal[0]).filter(h => !["UID","Nomor"].includes(h));
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const pageData = dataGlobal.slice(start, start + ROWS_PER_PAGE);
+    function formatTanggal(tanggalString) {
+      if (!tanggalString) return "";
+      try {
+        const date = new Date(tanggalString);
+        if (isNaN(date)) return tanggalString;
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('id-ID', options);
+      } catch {
+        return tanggalString;
+      }
+    }
 
-  let html = "<table><thead><tr>";
-  headers.forEach(h => {
-    const arrow = sortConfig.key === h ? (sortConfig.asc ? \"▲\" : \"▼\") : \"\";
-    html += `<th onclick=\"sortTable('${h}')\">${h}<span>${arrow}</span></th>`;
-  });
-  html += "</tr></thead><tbody>";
+    function renderTable() {
+      if (currentData.length === 0) {
+        document.getElementById("result").innerHTML = "<p style='text-align:center;'>TIDAK ADA DATA DITEMUKAN.</p>";
+        return;
+      }
 
-  pageData.forEach(row => {
-    html += "<tr>";
-    headers.forEach(h => {
-      let val = row[h];
-      let cls = "";
-      if (h.toLowerCase().includes("tanggal")) val = formatTanggal(val);
-      if (h.toLowerCase() === "status") cls = "status-" + val.toLowerCase();
-      html += `<td class=\"${cls}\">${val ?? "-"}</td>`;
-    });
-    html += "</tr>";
-  });
+      // filter agar UID dan Nomor tidak ditampilkan
+      const headers = Object.keys(currentData[0]).filter(h => h !== "UID" && h !== "Nomor");
 
-  html += "</tbody></table>";
-  html += renderPagination();
-  result.innerHTML = html;
-}
+      let table = "<table class='fade-in'><thead><tr>";
+      headers.forEach(h => table += `<th onclick="sortTable('${h}')">${h}</th>`);
+      table += "</tr></thead><tbody>";
 
-/* ================== SORTING ================== */
-function sortTable(key) {
-  sortConfig.asc = sortConfig.key === key ? !sortConfig.asc : true;
-  sortConfig.key = key;
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      const pageData = currentData.slice(start, end);
 
-  dataGlobal.sort((a, b) => {
-    if (a[key] > b[key]) return sortConfig.asc ? 1 : -1;
-    if (a[key] < b[key]) return sortConfig.asc ? -1 : 1;
-    return 0;
-  });
+      pageData.forEach(row => {
+        table += "<tr>";
+        headers.forEach(h => {
+          let cellValue = row[h];
+          let cellClass = "";
 
-  renderTable();
-}
+          // format tanggal
+          if (h.toLowerCase().includes("tanggal")) {
+            cellValue = formatTanggal(cellValue);
+          }
 
-/* ================== PAGINATION ================== */
-function renderPagination() {
-  const pages = Math.ceil(dataGlobal.length / ROWS_PER_PAGE);
-  if (pages <= 1) return "";
+          // warna status
+          if (h.toLowerCase() === "status") {
+            switch(cellValue.toUpperCase()) {
+              case "SELESAI": cellClass = "status-selesai"; break;
+              case "PEMESANAN": cellClass = "status-pemesanan"; break;
+              case "BACKORDER": cellClass = "status-backorder"; break;
+              case "READI": cellClass = "status-readi"; break;
+            }
+          }
 
-  let html = "<div class='pagination'>";
-  for (let i = 1; i <= pages; i++) {
-    html += `<button onclick="goPage(${i})">${i}</button>`;
-  }
-  html += "</div>";
-  return html;
-}
+          table += `<td class="${cellClass}">${cellValue}</td>`;
+        });
+        table += "</tr>";
+      });
 
-function goPage(p) {
-  currentPage = p;
-  renderTable();
-}
-</script>
+      table += "</tbody></table>";
+      table += renderPagination();
+      document.getElementById("result").innerHTML = table;
+    }
 
+    function sortTable(header) {
+      currentData.sort((a, b) => (a[header] > b[header]) ? 1 : -1);
+      renderTable();
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(currentData.length / rowsPerPage);
+      let buttons = "<div class='pagination'>";
+      for (let i = 1; i <= totalPages; i++) {
+        buttons += `<button onclick="goToPage(${i})">${i}</button>`;
+      }
+      buttons += "</div>";
+      return buttons;
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      renderTable();
+    }
+  </script>
 </body>
 </html>
