@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>STATUS PESANAN</title>
+<title>PERIKSA STATUS PESANAN</title>
 
 <meta name="description" content="PERIKSA STATUS PESANAN">
 <meta name="robots" content="noindex,nofollow">
@@ -206,8 +206,8 @@ td[class^="status-"]{
 <body>
 
 <header>
-  <h1>STATUS PESANAN</h1>
-  <p>MASUKKAN NOMOR TELEPON UNTUK PERIKSA STATUS PESANAN ANDA</p>
+  <h1>PERIKSA STATUS PESANAN</h1>
+  <p>MASUKKAN NOMOR TELEPON</p>
 </header>
 
 <div class="search-card">
@@ -276,7 +276,7 @@ function formatDate(v){
 /* ================= FETCH ================= */
 async function cekStatus(){
   const t = telInput.value;
-  if(t.length < 8) return showMessage("Nomor telepon tidak valid");
+  if(t.length < 8) return showMessage("NOMOR TELEPON TIDAK VALID");
 
   showLoader();
 
@@ -287,14 +287,14 @@ async function cekStatus(){
     STATE.page = 1;
     render();
   }catch{
-    showMessage("Gagal mengambil data");
+    showMessage("GAGAL MENGAMBIL DATA");
   }
 }
 
 /* ================= RENDER ================= */
 function render(){
   if(!STATE.data.length)
-    return showMessage("Data tidak ditemukan");
+    return showMessage("DATA TIDAK DITEMUKAN");
 
   const headers = Object.keys(STATE.data[0])
     .filter(h=>!["UID","Nomor"].includes(h));
