@@ -5,20 +5,42 @@
 <title>CEK STATUS TRANSAKSI</title>
 
 <style>
+:root {
+  --bg: #f4f6f9;
+  --text: #333;
+  --header-bg: linear-gradient(135deg, #007BFF, #00C6FF);
+  --table-bg: #fff;
+  --th-bg: #007BFF;
+  --th-text: #fff;
+}
+
+body.dark {
+  --bg: #1e1e1e;
+  --text: #e0e0e0;
+  --header-bg: linear-gradient(135deg, #222, #444);
+  --table-bg: #2a2a2a;
+  --th-bg: #444;
+  --th-text: #e0e0e0;
+}
+
 /* ================== GLOBAL ================== */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  background: #f4f6f9;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
 }
 
 header {
-  background: linear-gradient(135deg, #007BFF, #00C6FF);
+  background: var(--header-bg);
   color: white;
   padding: 24px;
   text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+header .controls {
+  margin-top: 10px;
 }
 
 input {
@@ -33,11 +55,15 @@ button {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background: #007BFF;
+  background: linear-gradient(135deg, #007BFF, #00C6FF);
   color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-button:hover { background: #0056b3; }
+button:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
 #result {
   margin: 20px;
@@ -49,10 +75,11 @@ table {
   width: 95%;
   margin: auto;
   border-collapse: collapse;
-  background: white;
+  background: var(--table-bg);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 th, td {
@@ -62,8 +89,8 @@ th, td {
 }
 
 th {
-  background: #007BFF;
-  color: white;
+  background: var(--th-bg);
+  color: var(--th-text);
   cursor: pointer;
   user-select: none;
   text-transform: uppercase;
@@ -92,12 +119,54 @@ tr:hover { background: #f1f9ff; }
   padding: 8px 14px;
   background: #00C6FF;
   border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007BFF;
+  font-weight: bold;
 }
 
 /* ================== LOADING ================== */
 .loading {
-  font-weight: bold;
   margin-top: 20px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007BFF;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================== MOBILE ================== */
+@media (max-width: 600px) {
+  input, button {
+    width: 90%;
+    margin: 6px auto;
+    display: block;
+  }
+  table {
+    width: 100%;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+  }
 }
 </style>
 </head>
@@ -106,8 +175,11 @@ tr:hover { background: #f1f9ff; }
 
 <header>
   <h1>CEK STATUS TRANSAKSI</h1>
-  <input type="text" id="telepon" placeholder="CONTOH: 08123456789" />
-  <button onclick="cekStatus()">CEK</button>
+  <div class="controls">
+    <input type="text" id="telepon" placeholder="CONTOH: 08123456789" />
+    <button onclick="cekStatus()">CEK</button>
+    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  </div>
 </header>
 
 <div id="result"></div>
@@ -139,7 +211,7 @@ async function cekStatus() {
     return;
   }
 
-  result.innerHTML = "<div class='loading'>MEMUAT DATA...</div>";
+  result.innerHTML = "<div class='loading'><div class='spinner'></div><p>MEMUAT DATA...</p></div>";
 
   try {
     const res = await fetch(`${API_URL}?telepon=${telepon}&key=${API_KEY}`);
@@ -189,49 +261,300 @@ function renderTable() {
       let val = row[h];
       let cls = "";
       if (h.toLowerCase().includes("tanggal")) val = formatTanggal(val);
-      if (h.toLowerCase() === "status") cls = "status-" + val.toLowerCase();
+      if (h.toLowerCase() === "status") {
+        const map = {
+          "Selesai": "status-selesai",
+          "Pemesanan": "status-pemesanan",
+          "Backorder": "status-backorder",
+          "Readi": "status-readi"
+        };
+        cls = map[val] || "";
+      }
       html += `<td class="${cls}">${val ?? "-"}</td>`;
     });
     html += "</tr>";
   });
 
-  html += "</tbody></table>";
-  html += renderPagination();
-  result.innerHTML = html;
+  html +=Berikut versi **copy‑paste** yang sudah ditambahkan **Dark Mode Switch** dan **Mobile Responsive**.  
+
+Perubahan utama:  
+- Tombol 🌙 Dark Mode di header untuk toggle tema.  
+- CSS variabel warna (`:root`) agar mudah switch ke dark mode.  
+- Media query untuk layar ≤600px: input & tombol full width, tabel scroll horizontal.  
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>CEK STATUS TRANSAKSI</title>
+
+<style>
+:root {
+  --bg: #f4f6f9;
+  --text: #333;
+  --header-bg: linear-gradient(135deg, #007BFF, #00C6FF);
+  --table-bg: #fff;
+  --th-bg: #007BFF;
+  --th-text: #fff;
 }
 
-/* ================== SORTING ================== */
-function sortTable(key) {
-  sortConfig.asc = sortConfig.key === key ? !sortConfig.asc : true;
-  sortConfig.key = key;
-
-  dataGlobal.sort((a, b) => {
-    if (a[key] > b[key]) return sortConfig.asc ? 1 : -1;
-    if (a[key] < b[key]) return sortConfig.asc ? -1 : 1;
-    return 0;
-  });
-
-  renderTable();
+body.dark {
+  --bg: #1e1e1e;
+  --text: #e0e0e0;
+  --header-bg: linear-gradient(135deg, #222, #444);
+  --table-bg: #2a2a2a;
+  --th-bg: #444;
+  --th-text: #e0e0e0;
 }
+
+/* ================== GLOBAL ================== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  background: var(--header-bg);
+  color: white;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+header .controls {
+  margin-top: 10px;
+}
+
+input {
+  padding: 10px;
+  width: 260px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #007BFF, #00C6FF);
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#result {
+  margin: 20px;
+  text-align: center;
+}
+
+/* ================== TABLE ================== */
+table {
+  width: 95%;
+  margin: auto;
+  border-collapse: collapse;
+  background: var(--table-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+th {
+  background: var(--th-bg);
+  color: var(--th-text);
+  cursor: pointer;
+  user-select: none;
+  text-transform: uppercase;
+}
+
+th span {
+  font-size: 10px;
+  margin-left: 6px;
+}
+
+tr:hover { background: #f1f9ff; }
+
+/* ================== STATUS ================== */
+.status-selesai { background:#d4edda; color:#155724; font-weight:bold; }
+.status-pemesanan { background:#fff3cd; color:#856404; font-weight:bold; }
+.status-backorder { background:#f8d7da; color:#721c24; font-weight:bold; }
+.status-readi { background:#d1ecf1; color:#0c5460; font-weight:bold; }
 
 /* ================== PAGINATION ================== */
-function renderPagination() {
-  const pages = Math.ceil(dataGlobal.length / ROWS_PER_PAGE);
-  if (pages <= 1) return "";
+.pagination {
+  margin: 20px;
+}
 
-  let html = "<div class='pagination'>";
-  for (let i = 1; i <= pages; i++) {
-    html += `<button onclick="goPage(${i})">${i}</button>`;
+.pagination button {
+  margin: 4px;
+  padding: 8px 14px;
+  background: #00C6FF;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007BFF;
+  font-weight: bold;
+}
+
+/* ================== LOADING ================== */
+.loading {
+  margin-top: 20px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007BFF;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================== MOBILE ================== */
+@media (max-width: 600px) {
+  input, button {
+    width: 90%;
+    margin: 6px auto;
+    display: block;
   }
-  html += "</div>";
-  return html;
+  table {
+    width: 100%;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>CEK STATUS TRANSAKSI</h1>
+  <div class="controls">
+    <input type="text" id="telepon" placeholder="CONTOH: 08123456789" />
+    <button onclick="cekStatus()">CEK</button>
+    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  </div>
+</header>
+
+<div id="result"></div>
+
+<script>
+/* ================== CONFIG ================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
+const API_KEY = "ISI_API_KEY_KAMU"; // WAJIB SAMA DENGAN DI APPS SCRIPT
+
+const ROWS_PER_PAGE = 5;
+
+/* ================== STATE ================== */
+let dataGlobal = [];
+let currentPage = 1;
+let sortConfig = { key: null, asc: true };
+
+/* ================== VALIDATION ================== */
+function validTelepon(input) {
+  return /^[0-9]{9,14}$/.test(input);
 }
 
-function goPage(p) {
-  currentPage = p;
-  renderTable();
-}
-</script>
+/* ================== MAIN ================== */
+async function cekStatus() {
+  const telepon = document.getElementById("telepon").value.trim();
+  const result = document.getElementById("result");
 
-</body>
-</html>
+  if (!validTelepon(telepon)) {
+    alert("MASUKKAN NOMOR TELEPON YANG VALID (ANGKA SAJA)");
+    return;
+  }
+
+  result.innerHTML = "<div class='loading'><div class='spinner'></div><p>MEMUAT DATA...</p></div>";
+
+  try {
+    const res = await fetch(`${API_URL}?telepon=${telepon}&key=${API_KEY}`);
+    if (!res.ok) throw new Error("Gagal koneksi server");
+
+    const json = await res.json();
+    if (!Array.isArray(json) || json.length === 0) {
+      result.innerHTML = "<p>TIDAK ADA DATA DITEMUKAN</p>";
+      return;
+    }
+
+    dataGlobal = json;
+    currentPage = 1;
+    renderTable();
+
+  } catch (err) {
+    console.error(err);
+    result.innerHTML = "<p>TERJADI KESALAHAN, SILAKAN COBA LAGI</p>";
+  }
+}
+
+/* ================== UTIL ================== */
+function formatTanggal(val) {
+  const d = new Date(val);
+  if (isNaN(d)) return val;
+  return d.toLocaleDateString("id-ID", { day:"2-digit", month:"long", year:"numeric" });
+}
+
+/* ================== RENDER ================== */
+function renderTable() {
+  const result = document.getElementById("result");
+
+  const headers = Object.keys(dataGlobal[0]).filter(h => !["UID","Nomor"].includes(h));
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const pageData = dataGlobal.slice(start, start + ROWS_PER_PAGE);
+
+  let html = "<table><thead><tr>";
+  headers.forEach(h => {
+    const arrow = sortConfig.key === h ? (sortConfig.asc ? "▲" : "▼") : "";
+    html += `<th onclick="sortTable('${h}')">${h}<span>${arrow}</span></th>`;
+  });
+  html += "</tr></thead><tbody>";
+
+  pageData.forEach(row => {
+    html += "<tr>";
+    headers.forEach(h => {
+      let val = row[h];
+      let cls = "";
+      if (h.toLowerCase().includes("tanggal")) val = formatTanggal(val);
+      if (h.toLowerCase() === "status") {
+        const map = {
+          "Selesai": "status-selesai",
+          "Pemesanan": "status-pemesanan",
+          "Backorder": "status-backorder",
+          "Readi": "status-readi"
+        };
+        cls = map[val] || "";
+      }
+      html += `<td class="${cls}">${val ?? "-"}</td>`;
+    });
+    html +=
