@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.2" />
-<title>Periksa Status Pesanan</title>
+<title>STATUS PESANAN</title>
 
-<meta name="description" content="Cek status pesanan berdasarkan nomor telepon">
+<meta name="description" content="Cek status pesanan">
 <meta name="robots" content="noindex,nofollow">
 
 <style>
@@ -226,17 +226,17 @@ footer{
 <body>
 
 <header>
-  <h1>PERIKSA STATUS PESANAN</h1>
-  <p>Cek pesanan Anda secara cepat & aman</p>
+  <h1>STATUS PESANAN</h1>
+  <p>Masukkan nomor telepon</p>
 </header>
 
 <section class="info-hero">
   <div class="info-card">
-    <strong>📦 Cara penggunaan:</strong>
+    <strong>Keterangan status:</strong>
     <ul>
-      <li>Masukkan nomor telepon saat pemesanan</li>
-      <li>Klik tombol <b>PERIKSA</b></li>
-      <li>Status pesanan akan muncul otomatis</li>
+      <li>Readi : Pesanan tersedia, silakan segera diambil</li>
+      <li>Pemesanan : Dalam proses pemesanan ke Cabang</li>
+      <li>Backorder : Ketersediaan pesanan kosong, menunggu produksi supplier</li>
     </ul>
   </div>
 </section>
@@ -261,7 +261,7 @@ footer{
 </div>
 
 <footer>
-  © 2026 · Sistem Informasi Pesanan
+  © 2026 · LG Costumer Care & Service Denpasar
 </footer>
 
 <script>
@@ -310,7 +310,7 @@ function formatDate(v){
 /* FETCH */
 async function cekStatus(){
   if(tel.value.length<8)
-    return showMessage("📞 Nomor telepon tidak valid");
+    return showMessage("📞 Masukkan nomor telepon dengan benar");
 
   showLoader();
 
@@ -329,7 +329,7 @@ async function cekStatus(){
 /* RENDER */
 function render(){
   if(!STATE.data.length)
-    return showMessage("📭 Data tidak ditemukan");
+    return showMessage("📭 Data tidak ditemukan atau nomor tidak terdaftar");
 
   const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
   const start=(STATE.page-1)*ROWS;
