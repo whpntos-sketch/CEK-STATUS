@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.2" />
-<title>STATUS PESANAN</title>
+<title>INFORMASI STATUS PESANAN</title>
 
 <meta name="description" content="Cek status pesanan">
 <meta name="robots" content="noindex,nofollow">
@@ -207,8 +207,8 @@ footer{
 <body>
 
 <header>
-  <h1>STATUS PESANAN</h1>
-  <p>Masukkan Nomor Telepon</p>
+  <h1>INFORMASI STATUS PESANAN</h1>
+  <p>SILAKAN MASUKKAN DATA UNTUK MELANJUTKAN</p>
 </header>
 
 <div class="search-card">
@@ -263,7 +263,7 @@ function statusInfo(){
   return `
   <section class="info-hero">
     <div class="info-card">
-      <strong>📦 Keterangan Status:</strong>
+      <strong>🪧 KETERANGAN STATUS:</strong>
       <ul>
         <li><b>READI</b> : Pesanan telah tersedia dan sudah siap diambil</li>
         <li><b>PEMESANAN</b> : Dalam proses pemesanan ke Cabang atau Part Center</li>
@@ -283,7 +283,7 @@ function formatDate(v){
 
 async function cekStatus(){
   if(tel.value.length<8)
-    return showMessage("📲 MASUKKAN NOMOR TELEPON YANG TERDAFTAR");
+    return showMessage("☎ MASUKKAN NOMOR TELEPON YANG TERDAFTAR");
 
   showLoader();
   try{
@@ -299,7 +299,7 @@ async function cekStatus(){
 
 function render(){
   if(!STATE.data.length)
-    return showMessage("🗃 DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
+    return showMessage("📚 DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
 
   const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
   const start=(STATE.page-1)*ROWS;
