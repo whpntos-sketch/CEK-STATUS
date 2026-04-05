@@ -2,8 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.5" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.2" />
 <title>Periksa Status Pesanan</title>
 
 <meta name="description" content="Cek status pesanan berdasarkan nomor telepon">
@@ -33,22 +32,21 @@ body{
 header{
   padding:56px 20px 96px;
   text-align:center;
-  background:linear-gradient(180deg,#fff, #f1f5f9);
+  background:linear-gradient(180deg,#ffffff,#f1f5f9);
 }
 
 header h1{
   margin:0;
   font-size:2rem;
-  letter-spacing:1px;
 }
 
 header p{
   margin-top:8px;
-  font-size:.95rem;
   color:var(--muted);
+  font-size:.95rem;
 }
 
-/* ===== INFO HERO ===== */
+/* ===== INFO ===== */
 .info-hero{
   display:flex;
   justify-content:center;
@@ -57,27 +55,16 @@ header p{
 }
 
 .info-card{
-  max-width:760px;
   background:var(--primary-soft);
-  padding:28px;
+  max-width:720px;
+  padding:24px;
   border-radius:var(--radius);
-}
-
-.info-card h2{
-  margin:0 0 8px;
-  font-size:1.2rem;
-}
-
-.info-card p{
-  margin:0;
   font-size:.9rem;
-  color:var(--muted);
 }
 
 .info-card ul{
-  margin:16px 0 0;
-  padding-left:20px;
-  font-size:.85rem;
+  margin-top:12px;
+  padding-left:18px;
   color:var(--muted);
 }
 
@@ -101,11 +88,9 @@ input{
   padding:14px 16px;
   border-radius:10px;
   border:1px solid #e2e8f0;
-  font-size:.95rem;
 }
 
-input:focus,
-button:focus{
+input:focus,button:focus{
   outline:3px solid var(--primary-soft);
   border-color:var(--primary);
 }
@@ -122,31 +107,32 @@ button{
 
 button:hover{opacity:.9}
 
-/* ===== CONTENT ===== */
+/* ===== RESULT ===== */
 .container{
   max-width:1100px;
   margin:auto;
   padding:0 16px 64px;
 }
 
-/* ===== ALERT / MESSAGE ===== */
+/* MESSAGE */
 .message{
   text-align:center;
-  font-weight:500;
   padding:32px 0;
   color:var(--muted);
+  font-weight:500;
 }
 
+/* SUCCESS */
 .alert-success{
   background:#ecfeff;
   border-left:5px solid var(--primary);
   padding:14px 16px;
   border-radius:10px;
-  font-size:.9rem;
   margin-bottom:16px;
+  font-size:.9rem;
 }
 
-/* ===== LOADER ===== */
+/* LOADER */
 .loader{
   width:40px;
   height:40px;
@@ -163,7 +149,7 @@ button:hover{opacity:.9}
 
 /* ===== TABLE ===== */
 .table-card{
-  background:var(--card);
+  background:white;
   border-radius:var(--radius);
   box-shadow:0 16px 32px rgba(0,0,0,.06);
   overflow-x:auto;
@@ -183,13 +169,14 @@ th,td{
 th{
   background:var(--primary-soft);
   color:var(--primary);
-  font-weight:700;
   cursor:pointer;
 }
 
-tbody tr:hover{background:#f1f5f9}
+tbody tr:hover{
+  background:#f1f5f9;
+}
 
-/* ===== STATUS ===== */
+/* STATUS */
 td[class^="status-"]{
   font-weight:700;
   text-transform:uppercase;
@@ -202,7 +189,7 @@ td[class^="status-"]{
 .status-backorder{background:#fee2e2;color:#b91c1c}
 .status-ready{background:#dbeafe;color:#1e40af}
 
-/* ===== PAGINATION ===== */
+/* PAGINATION */
 .pagination{
   display:flex;
   justify-content:center;
@@ -212,24 +199,23 @@ td[class^="status-"]{
 
 .pagination button{
   background:#e2e8f0;
-  border-radius:8px;
   padding:8px 14px;
+  border-radius:8px;
 }
 
 .pagination button.active{
   background:var(--primary);
-  color:#fff;
+  color:white;
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 footer{
   text-align:center;
-  padding:48px 16px 32px;
+  padding:48px 16px;
   font-size:.8rem;
   color:var(--muted);
 }
 
-/* ===== MOBILE ===== */
 @media(max-width:600px){
   header h1{font-size:1.6rem}
   .search-box{flex-direction:column}
@@ -241,20 +227,16 @@ footer{
 
 <header>
   <h1>PERIKSA STATUS PESANAN</h1>
-  <p>Lacak pesanan Anda secara cepat dan mudah</p>
+  <p>Cek pesanan Anda secara cepat & aman</p>
 </header>
 
 <section class="info-hero">
   <div class="info-card">
-    <h2>📦 Cara Mengecek Pesanan</h2>
-    <p>
-      Masukkan <strong>nomor telepon</strong> yang digunakan saat pemesanan.
-      Sistem akan menampilkan status pesanan terbaru Anda.
-    </p>
+    <strong>📦 Cara penggunaan:</strong>
     <ul>
-      <li>✅ Tanpa login</li>
-      <li>✅ Data real-time</li>
-      <li>✅ Aman & praktis</li>
+      <li>Masukkan nomor telepon saat pemesanan</li>
+      <li>Klik tombol <b>PERIKSA</b></li>
+      <li>Status pesanan akan muncul otomatis</li>
     </ul>
   </div>
 </section>
@@ -268,7 +250,6 @@ footer{
       placeholder="Nomor Telepon"
       inputmode="numeric"
       autocomplete="tel"
-      aria-label="Nomor Telepon"
       oninput="this.value=this.value.replace(/[^0-9]/g,'')"
     />
     <button onclick="cekStatus()">PERIKSA</button>
@@ -280,14 +261,15 @@ footer{
 </div>
 
 <footer>
-  © 2026 · Sistem Informasi Pesanan<br>
-  Dibuat dengan ❤️ untuk pelanggan
+  © 2026 · Sistem Informasi Pesanan
 </footer>
 
 <script>
+/* CONFIG */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
 
+/* STATE */
 let STATE={data:[],page:1,sort:{}};
 
 const STATUS_MAP={
@@ -300,19 +282,20 @@ const STATUS_MAP={
 const result=document.getElementById("result");
 const tel=document.getElementById("telepon");
 
-const last=localStorage.getItem("lastTel");
-if(last) tel.value=last;
+/* UTILS */
+function showMessage(t){
+  result.innerHTML=`<div class="message">${t}</div>`;
+}
 
-tel.addEventListener("keydown",e=>e.key==="Enter"&&cekStatus());
-
-function showMessage(t){result.innerHTML=`<div class="message">${t}</div>`}
-function showLoader(){result.innerHTML=`<div class="loader"></div>`}
+function showLoader(){
+  result.innerHTML=`<div class="loader"></div>`;
+}
 
 function showSuccess(n){
-  const a=document.createElement("div");
-  a.className="alert-success";
-  a.innerHTML=`✅ <strong>${n}</strong> data pesanan ditemukan`;
-  result.prepend(a);
+  const box=document.createElement("div");
+  box.className="alert-success";
+  box.innerHTML=`✅ <strong>${n}</strong> data ditemukan`;
+  result.prepend(box);
 }
 
 function normalizeStatus(v){
@@ -324,16 +307,17 @@ function formatDate(v){
   return isNaN(d)?v:d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
 }
 
+/* FETCH */
 async function cekStatus(){
   if(tel.value.length<8)
-    return showMessage("📞 Masukkan nomor telepon dengan benar");
+    return showMessage("📞 Nomor telepon tidak valid");
 
   showLoader();
-  localStorage.setItem("lastTel",tel.value);
 
   try{
     const r=await fetch(`${API_URL}?telepon=${tel.value}`);
     const j=await r.json();
+
     STATE.data=Array.isArray(j)?j:[];
     STATE.page=1;
     render();
@@ -342,6 +326,7 @@ async function cekStatus(){
   }
 }
 
+/* RENDER */
 function render(){
   if(!STATE.data.length)
     return showMessage("📭 Data tidak ditemukan");
@@ -357,10 +342,10 @@ function render(){
   slice.forEach(r=>{
     html+=`<tr>`;
     headers.forEach(k=>{
-      let v=r[k]??"",c="";
+      let v=r[k]??"",cls="";
       if(k.toLowerCase().includes("tanggal"))v=formatDate(v);
-      if(k.toLowerCase()==="status")c=STATUS_MAP[normalizeStatus(v)]||"";
-      html+=`<td class="${c}">${v}</td>`;
+      if(k.toLowerCase()==="status")cls=STATUS_MAP[normalizeStatus(v)]||"";
+      html+=`<td class="${cls}">${v}</td>`;
     });
     html+=`</tr>`;
   });
@@ -370,27 +355,49 @@ function render(){
   showSuccess(STATE.data.length);
 }
 
+/* SORT ✅ FIXED */
 function sortBy(k){
   STATE.sort[k]=!STATE.sort[k];
-  const a=STATE.sort[k];
-  STATE.data.sort((x,y)=>{
-    if(!isNaN(x[k])&&!isNaN(y[k]))return a?x[k]-yy[k]-x[k];
-    return a?String(x[k]).localeCompare(String(y[k])):String(y[k]).localeCompare(String(x[k]));
+  const asc=STATE.sort[k];
+
+  STATE.data.sort((a,b)=>{
+    const x=a[k];
+    const y=b[k];
+
+    if(!isNaN(x)&&!isNaN(y)){
+      return asc?x-y:y-x;
+    }
+
+    return asc
+      ?String(x).localeCompare(String(y))
+      :String(y).localeCompare(String(x));
   });
+
   render();
 }
 
+/* PAGINATION */
 function pagination(){
-  const p=Math.ceil(STATE.data.length/ROWS);
+  const pages=Math.ceil(STATE.data.length/ROWS);
   let h=`<div class="pagination">`;
-  if(STATE.page>1)h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
-  for(let i=1;i<=p;i++)
+
+  if(STATE.page>1)
+    h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
+
+  for(let i=1;i<=pages;i++){
     h+=`<button class="${i===STATE.page?"active":""}" onclick="goto(${i})">${i}</button>`;
-  if(STATE.page<p)h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
+  }
+
+  if(STATE.page<pages)
+    h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
+
   return h+`</div>`;
 }
 
-function goto(p){STATE.page=p;render();}
+function goto(p){
+  STATE.page=p;
+  render();
+}
 </script>
 
 </body>
