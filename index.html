@@ -255,7 +255,7 @@ function showLoader(){
 function showSuccess(n){
   const el=document.createElement("div");
   el.className="alert-success";
-  el.innerHTML=`📑 <strong>${n}</strong> Data ditemukan`;
+  el.innerHTML=`📑 <strong>${n}</strong> Informasi status order ditemukan`;
   result.prepend(el);
 }
 
@@ -268,7 +268,7 @@ function statusInfo(){
         <li><b>READI</b> : Pesanan telah tersedia dan sudah siap diambil</li>
         <li><b>PEMESANAN</b> : Dalam proses pemesanan ke Cabang atau Part Center</li>
         <li><b>BACKORDER</b> : Status pesanan Not Available Stok dan harus menunggu produksi Supplier</li>
-        <li><b>**Detail keterangan tambahan mengacu pada tabel</b></li>
+        <li><b>** Detail keterangan tambahan mengacu pada Tabel</b></li>
       </ul>
     </div>
   </section>`;
