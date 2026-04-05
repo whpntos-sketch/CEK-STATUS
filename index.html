@@ -226,7 +226,7 @@ footer{
 </div>
 
 <footer>
-  © 2026 · LG Customer Care & Service Denpasar
+  © 2026 · 🇮🇩 LG Customer Care & Service Denpasar
 Unofficial by Madētha
 </footer>
 
@@ -255,7 +255,7 @@ function showLoader(){
 function showSuccess(n){
   const el=document.createElement("div");
   el.className="alert-success";
-  el.innerHTML=`✅ <strong>${n}</strong> data ditemukan`;
+  el.innerHTML=`🗂 <strong>${n}</strong> Data ditemukan`;
   result.prepend(el);
 }
 
@@ -283,7 +283,7 @@ function formatDate(v){
 
 async function cekStatus(){
   if(tel.value.length<8)
-    return showMessage("📞 Masukkan Nomor Telepon yang terdaftar");
+    return showMessage("📲 MASUKKAN NOMOR TELEPON YANG TERDAFTAR");
 
   showLoader();
   try{
@@ -293,13 +293,13 @@ async function cekStatus(){
     STATE.page=1;
     render();
   }catch{
-    showMessage("⚠️ Gagal mengambil data");
+    showMessage("⚠️ GAGAL MENGAMBIL DATA");
   }
 }
 
 function render(){
   if(!STATE.data.length)
-    return showMessage("📭 Data tidak ditemukan atau Nomor Telepon tidak terdaftar");
+    return showMessage("📚 DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
 
   const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
   const start=(STATE.page-1)*ROWS;
