@@ -28,50 +28,20 @@ body{
   color:var(--text);
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header{
   padding:56px 20px 96px;
   text-align:center;
   background:linear-gradient(180deg,#ffffff,#f1f5f9);
 }
 
-header h1{
-  margin:0;
-  font-size:2rem;
-}
+header h1{margin:0;font-size:2rem}
+header p{margin-top:8px;color:var(--muted);font-size:.95rem}
 
-header p{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:.95rem;
-}
-
-/* ===== INFO ===== */
-.info-hero{
-  display:flex;
-  justify-content:center;
-  margin-top:-56px;
-  padding:0 16px;
-}
-
-.info-card{
-  background:var(--primary-soft);
-  max-width:720px;
-  padding:24px;
-  border-radius:var(--radius);
-  font-size:.9rem;
-}
-
-.info-card ul{
-  margin-top:12px;
-  padding-left:18px;
-  color:var(--muted);
-}
-
-/* ===== SEARCH ===== */
+/* SEARCH */
 .search-card{
   max-width:520px;
-  margin:32px auto 24px;
+  margin:-56px auto 24px;
   background:var(--card);
   padding:24px;
   border-radius:var(--radius);
@@ -107,7 +77,7 @@ button{
 
 button:hover{opacity:.9}
 
-/* ===== RESULT ===== */
+/* CONTENT */
 .container{
   max-width:1100px;
   margin:auto;
@@ -142,12 +112,9 @@ button:hover{opacity:.9}
   margin:32px auto;
   animation:spin 1s linear infinite;
 }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-/* ===== TABLE ===== */
+/* TABLE */
 .table-card{
   background:white;
   border-radius:var(--radius);
@@ -172,9 +139,7 @@ th{
   cursor:pointer;
 }
 
-tbody tr:hover{
-  background:#f1f5f9;
-}
+tbody tr:hover{background:#f1f5f9}
 
 /* STATUS */
 td[class^="status-"]{
@@ -183,7 +148,6 @@ td[class^="status-"]{
   border-radius:8px;
   padding:8px 12px;
 }
-
 .status-selesai{background:#dcfce7;color:#15803d}
 .status-pemesanan{background:#fef9c3;color:#92400e}
 .status-backorder{background:#fee2e2;color:#b91c1c}
@@ -196,16 +160,33 @@ td[class^="status-"]{
   gap:6px;
   padding:20px;
 }
-
 .pagination button{
   background:#e2e8f0;
   padding:8px 14px;
   border-radius:8px;
 }
-
 .pagination button.active{
   background:var(--primary);
   color:white;
+}
+
+/* INFO STATUS */
+.info-hero{
+  margin-top:24px;
+  display:flex;
+  justify-content:center;
+}
+.info-card{
+  background:var(--primary-soft);
+  max-width:720px;
+  padding:20px;
+  border-radius:var(--radius);
+  font-size:.85rem;
+}
+.info-card ul{
+  margin-top:8px;
+  padding-left:18px;
+  color:var(--muted);
 }
 
 /* FOOTER */
@@ -230,28 +211,12 @@ footer{
   <p>Masukkan nomor telepon</p>
 </header>
 
-<section class="info-hero">
-  <div class="info-card">
-    <strong>Keterangan status:</strong>
-    <ul>
-      <li>Readi : Pesanan tersedia, silakan segera diambil</li>
-      <li>Pemesanan : Dalam proses pemesanan ke Cabang</li>
-      <li>Backorder : Ketersediaan pesanan kosong, menunggu produksi supplier</li>
-    </ul>
-  </div>
-</section>
-
 <div class="search-card">
   <div class="search-box">
-    <input
-      id="telepon"
-      type="tel"
-      maxlength="15"
+    <input id="telepon" type="tel" maxlength="15"
       placeholder="Nomor Telepon"
       inputmode="numeric"
-      autocomplete="tel"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-    />
+      oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
     <button onclick="cekStatus()">PERIKSA</button>
   </div>
 </div>
@@ -261,15 +226,14 @@ footer{
 </div>
 
 <footer>
-  © 2026 · LG Costumer Care & Service Denpasar
+  © 2026 · LG Customer Care & Service Denpasar
+Unofficial by Madētha
 </footer>
 
 <script>
-/* CONFIG */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
 
-/* STATE */
 let STATE={data:[],page:1,sort:{}};
 
 const STATUS_MAP={
@@ -282,42 +246,49 @@ const STATUS_MAP={
 const result=document.getElementById("result");
 const tel=document.getElementById("telepon");
 
-/* UTILS */
 function showMessage(t){
   result.innerHTML=`<div class="message">${t}</div>`;
 }
-
 function showLoader(){
   result.innerHTML=`<div class="loader"></div>`;
 }
-
 function showSuccess(n){
-  const box=document.createElement("div");
-  box.className="alert-success";
-  box.innerHTML=`✅ <strong>${n}</strong> data ditemukan`;
-  result.prepend(box);
+  const el=document.createElement("div");
+  el.className="alert-success";
+  el.innerHTML=`✅ <strong>${n}</strong> data ditemukan`;
+  result.prepend(el);
+}
+
+function statusInfo(){
+  return `
+  <section class="info-hero">
+    <div class="info-card">
+      <strong>Keterangan Status:</strong>
+      <ul>
+        <li><b>Readi</b> : Pesanan telah tersedia, silakan segera diambil</li>
+        <li><b>Pemesanan</b> : Dalam proses pemesanan ke Cabang atau Part Center</li>
+        <li><b>Backorder</b> : Status pesanan N/A Stok dan harus menunggu produksi supplier</li>
+      </ul>
+    </div>
+  </section>`;
 }
 
 function normalizeStatus(v){
   return v.toLowerCase().replace(/\s+/g,"").replace("readi","ready");
 }
-
 function formatDate(v){
   const d=new Date(v);
   return isNaN(d)?v:d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
 }
 
-/* FETCH */
 async function cekStatus(){
   if(tel.value.length<8)
-    return showMessage("📞 Masukkan nomor telepon dengan benar");
+    return showMessage("📞 Masukkan Nomor Telepon yang terdaftar");
 
   showLoader();
-
   try{
     const r=await fetch(`${API_URL}?telepon=${tel.value}`);
     const j=await r.json();
-
     STATE.data=Array.isArray(j)?j:[];
     STATE.page=1;
     render();
@@ -326,10 +297,9 @@ async function cekStatus(){
   }
 }
 
-/* RENDER */
 function render(){
   if(!STATE.data.length)
-    return showMessage("📭 Data tidak ditemukan atau nomor tidak terdaftar");
+    return showMessage("📭 Data tidak ditemukan atau Nomor Telepon tidak terdaftar");
 
   const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
   const start=(STATE.page-1)*ROWS;
@@ -350,54 +320,32 @@ function render(){
     html+=`</tr>`;
   });
 
-  html+=`</tbody></table></div>`+pagination();
+  html+=`</tbody></table></div>`+pagination()+statusInfo();
   result.innerHTML=html;
   showSuccess(STATE.data.length);
 }
 
-/* SORT ✅ FIXED */
 function sortBy(k){
   STATE.sort[k]=!STATE.sort[k];
   const asc=STATE.sort[k];
-
   STATE.data.sort((a,b)=>{
-    const x=a[k];
-    const y=b[k];
-
-    if(!isNaN(x)&&!isNaN(y)){
-      return asc?x-y:y-x;
-    }
-
-    return asc
-      ?String(x).localeCompare(String(y))
-      :String(y).localeCompare(String(x));
+    const x=a[k],y=b[k];
+    if(!isNaN(x)&&!isNaN(y))return asc?x-y:y-x;
+    return asc?String(x).localeCompare(String(y)):String(y).localeCompare(String(x));
   });
-
   render();
 }
 
-/* PAGINATION */
 function pagination(){
   const pages=Math.ceil(STATE.data.length/ROWS);
   let h=`<div class="pagination">`;
-
-  if(STATE.page>1)
-    h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
-
-  for(let i=1;i<=pages;i++){
+  if(STATE.page>1)h+=`<button onclick="goto(${STATE.page-1})">Prev</button>`;
+  for(let i=1;i<=pages;i++)
     h+=`<button class="${i===STATE.page?"active":""}" onclick="goto(${i})">${i}</button>`;
-  }
-
-  if(STATE.page<pages)
-    h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
-
+  if(STATE.page<pages)h+=`<button onclick="goto(${STATE.page+1})">Next</button>`;
   return h+`</div>`;
 }
-
-function goto(p){
-  STATE.page=p;
-  render();
-}
+function goto(p){STATE.page=p;render();}
 </script>
 
 </body>
