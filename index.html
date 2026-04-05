@@ -208,7 +208,7 @@ footer{
 
 <header>
   <h1>STATUS PESANAN</h1>
-  <p>Masukkan nomor telepon</p>
+  <p>Masukkan Nomor Telepon</p>
 </header>
 
 <div class="search-card">
@@ -226,8 +226,8 @@ footer{
 </div>
 
 <footer>
-  © 2026 · 🇮🇩 LG Customer Care & Service Denpasar
-Unofficial by Madētha
+  © 2026 · LG Customer Care & Service Denpasar
+Un-Official by Madētha
 </footer>
 
 <script>
@@ -255,7 +255,7 @@ function showLoader(){
 function showSuccess(n){
   const el=document.createElement("div");
   el.className="alert-success";
-  el.innerHTML=`🗂 <strong>${n}</strong> Data ditemukan`;
+  el.innerHTML=`📑 <strong>${n}</strong> Data ditemukan`;
   result.prepend(el);
 }
 
@@ -263,11 +263,11 @@ function statusInfo(){
   return `
   <section class="info-hero">
     <div class="info-card">
-      <strong>Keterangan Status:</strong>
+      <strong>📦 Keterangan Status:</strong>
       <ul>
-        <li><b>Readi</b> : Pesanan telah tersedia, silakan segera diambil</li>
-        <li><b>Pemesanan</b> : Dalam proses pemesanan ke Cabang atau Part Center</li>
-        <li><b>Backorder</b> : Status pesanan N/A Stok dan harus menunggu produksi supplier</li>
+        <li><b>READI</b> : Pesanan telah tersedia dan sudah siap diambil</li>
+        <li><b>PEMESANAN</b> : Dalam proses pemesanan ke Cabang atau Part Center</li>
+        <li><b>BACKORDER</b> : Status pesanan Not Available Stok dan harus menunggu produksi Supplier</li>
       </ul>
     </div>
   </section>`;
@@ -299,7 +299,7 @@ async function cekStatus(){
 
 function render(){
   if(!STATE.data.length)
-    return showMessage("📚 DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
+    return showMessage("🗃 DATA TIDAK DITEMUKAN ATAU NOMOR TELEPON TIDAK TERDAFTAR");
 
   const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
   const start=(STATE.page-1)*ROWS;
