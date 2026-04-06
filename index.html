@@ -294,10 +294,10 @@ function render(){
     return;
   }
 
-  const headers = Object.keys(STATE.data[0]);
-  const start = (STATE.page-1)*ROWS;
-  const rows = STATE.data.slice(start, start+ROWS);
-
+  const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor","KODE PART"].includes(h));
+  const start=(STATE.page-1)*ROWS;
+  const slice=STATE.data.slice(start,start+ROWS);
+  
   let html = `<div class="table-card"><table><thead><tr>`;
   headers.forEach(h => html+=`<th onclick="sortBy('${h}')">${h}</th>`);
   html += `</tr></thead><tbody>`;
