@@ -301,7 +301,7 @@ function render(){
   if(!STATE.data.length)
     return showMessage("📝 DATA TIDAK DITEMUKAN, PERIKSA FORMULIR ATAU MULAI MEMBUAT ORDER");
 
-  const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor"].includes(h));
+  const headers=Object.keys(STATE.data[0]).filter(h=>!["UID","Nomor","KODE PART"].includes(h));
   const start=(STATE.page-1)*ROWS;
   const slice=STATE.data.slice(start,start+ROWS);
 
