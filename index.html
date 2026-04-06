@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>INFORMASI STATUS ORDER</title>
 
-<meta name="description" content="Cek status pesanan berdasarkan nomor telepon">
+<meta name="description" content="Cek status pesanan Order">
 <meta name="robots" content="noindex,nofollow">
 
 <style>
@@ -212,7 +212,7 @@ function setCache(key,data){
 /* ================= FETCH ================= */
 async function cekStatus(){
   const tel=document.getElementById("telepon").value;
-  if(tel.length<8)return showMessage("☎ DATA TIDAK SESUAI");
+  if(tel.length<8)return showMessage("☎ Data tidak sesuai, mohon cek data input");
 
   const cacheKey="cekstatus_"+tel;
   const cached=getCache(cacheKey);
@@ -237,7 +237,7 @@ async function cekStatus(){
 
 /* ================= RENDER ================= */
 function render(){
-  if(!STATE.data.length)return showMessage("📝 DATA TIDAK DITEMUKAN");
+  if(!STATE.data.length)return showMessage("📝 Data tidak ditemukan, periksa formulir silakan membuat order");
 
   const HIDE=["uid","nomor","kode part"];
   const headers=Object.keys(STATE.data[0])
@@ -289,9 +289,9 @@ function statusInfo(){
       <ul>
         <li><b>READY</b> : Pesanan telah tersedia, siap untuk diambil atau pickup</li>
         <li><b>PEMESANAN</b> : Dalam proses pemesanan ke Cabang atau Pusat Spare Part</li>
-        <li><b>BACKORDER</b> : Stok tidak tersedia atau masih menunggu produksi dari Supplier</li>
+        <li><b>BACKORDER</b> : Stok tidak tersedia atau menunggu produksi dari Supplier</li>
         <li><b>SELESAI</b> : Pesanan telah selesai diproses dan ditutup</li>
-        <li><i>Detail keterangan tambahan mengacu pada tabel</i></li>
+        <li><i>*** Detail keterangan tambahan mengacu pada tabel</i></li>
       </ul>
     </div>
   </section>`;
