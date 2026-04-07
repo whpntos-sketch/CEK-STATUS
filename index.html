@@ -100,8 +100,6 @@ button{
   border-radius:var(--radius);
   box-shadow:var(--shadow);
   overflow-x:auto;
-
-  /* Fade in */
   animation:fade .35s ease-in-out;
 }
 @keyframes fade{
@@ -119,21 +117,12 @@ th{
   position:relative;
 }
 
-/* Sorting indicator */
-th.sort-asc::after{
-  content:"▲";
-  font-size:.7rem;
-  margin-left:6px;
-}
-th.sort-desc::after{
-  content:"▼";
-  font-size:.7rem;
-  margin-left:6px;
-}
+th.sort-asc::after{content:"▲";font-size:.7rem;margin-left:6px}
+th.sort-desc::after{content:"▼";font-size:.7rem;margin-left:6px}
 
 tbody tr:hover{background:#f1f5f9}
 
-/* STATUS FINAL */
+/* STATUS */
 td[class^="status-"]{
   font-weight:700;
   text-transform:uppercase;
@@ -192,31 +181,24 @@ footer{text-align:center;padding:48px 16px;font-size:.8rem;color:var(--muted)}
 </footer>
 
 <script>
-/* ================= CONFIG ================= */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
-
-/* Sinkron dengan TTL CacheService GAS (5 menit) */
 const CACHE_TTL=5*60*1000;
 
-/* ================= STATE ================= */
-const STATE={data:[],page:1,sort:{key:null,asc:true}};
+/* KOLOM DISMBUNYIKAN */
+const HIDDEN_COLUMNS = ["UID","Nomor","KODE PART"];
 
-/* ================= DOM ================= */
+const STATE={data:[],page:1,sort:{key:null,asc:true}};
 const result=document.getElementById("result");
 const telInput=document.getElementById("telepon");
 
-/* ================= UX ================= */
 telInput.addEventListener("keydown",e=>{
   if(e.key==="Enter") cekStatus();
 });
-
-/* Input masking & paste sanitization */
 telInput.addEventListener("input",()=>{
   telInput.value=telInput.value.replace(/\D/g,"");
 });
 
-/* ================= HELPER ================= */
 const showMessage=t=>result.innerHTML=`<div class="message">${t}</div>`;
 const showLoader=()=>result.innerHTML=`<div class="loader"></div>`;
 
@@ -234,19 +216,17 @@ const STATUS_MAP={
 
 const normalizeStatus=s=>String(s).toLowerCase().replace(/\s+/g,"").replace("readi","ready");
 
-/* ================= CLIENT CACHE ================= */
-function getCache(key){
-  const raw=localStorage.getItem(key);
-  if(!raw) return null;
-  const {data,time}=JSON.parse(raw);
+function getCache(k){
+  const r=localStorage.getItem(k);
+  if(!r) return null;
+  const {data,time}=JSON.parse(r);
   if(Date.now()-time>CACHE_TTL) return null;
   return data;
 }
-function setCache(key,data){
-  localStorage.setItem(key,JSON.stringify({data,time:Date.now()}));
+function setCache(k,d){
+  localStorage.setItem(k,JSON.stringify({data:d,time:Date.now()}));
 }
 
-/* ================= FETCH ================= */
 async function cekStatus(){
   const tel=telInput.value;
   if(tel.length<8)
@@ -273,12 +253,11 @@ async function cekStatus(){
   }
 }
 
-/* ================= RENDER ================= */
 function render(){
   if(!STATE.data.length)
     return showMessage("📝 Data tidak ditemukan, periksa formulir silakan membuat order");
 
-  const headers=Object.keys(STATE.data[0]);
+  const headers=Object.keys(STATE.data[0]).filter(h=>!HIDDEN_COLUMNS.includes(h));
   const start=(STATE.page-1)*ROWS;
   const slice=STATE.data.slice(start,start+ROWS);
 
@@ -286,8 +265,9 @@ function render(){
   headers.forEach(h=>{
     let cls="";
     if(STATE.sort.key===h) cls=STATE.sort.asc?"sort-asc":"sort-desc";
-    html+=`<th class="${cls}" onclick="sortBy('${h}',this)">${h}</th>`;
+    html+=`<th class="${cls}" onclick="sortBy('${h}')">${h}</th>`;
   });
+
   html+=`</tr></thead><tbody>`;
 
   slice.forEach(r=>{
@@ -306,11 +286,9 @@ function render(){
   result.innerHTML=html;
 }
 
-/* ================= SORT & PAGING ================= */
 function sortBy(k){
   STATE.sort.asc = STATE.sort.key===k ? !STATE.sort.asc : true;
   STATE.sort.key=k;
-
   STATE.data.sort((a,b)=>{
     const A=String(a[k]??"");
     const B=String(b[k]??"");
@@ -318,6 +296,7 @@ function sortBy(k){
   });
   render();
 }
+
 function pagination(){
   const pages=Math.ceil(STATE.data.length/ROWS);
   let h=`<div class="pagination">`;
@@ -325,6 +304,7 @@ function pagination(){
     h+=`<button class="${i===STATE.page?"active":""}" onclick="STATE.page=${i};render()">${i}</button>`;
   return h+`</div>`;
 }
+
 function statusInfo(){
   return `
   <section class="info-hero">
@@ -341,11 +321,10 @@ function statusInfo(){
   </section>`;
 }
 
-/* ================= DYNAMIC FOOTER ================= */
 const y=new Date().getFullYear();
 document.getElementById("year").textContent =
   y===2026?"2026":`2026 – ${y}`;
-
 </script>
+
 </body>
 </html>
