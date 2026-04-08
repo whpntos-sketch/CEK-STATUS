@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -65,22 +65,16 @@ button{
   font-weight:600;
   cursor:pointer;
 }
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
 
 /* CONTENT */
 .container{max-width:1100px;margin:auto;padding:0 16px 64px}
 
 /* MESSAGE */
 .message{text-align:center;padding:32px 0;color:var(--muted);font-weight:500}
-
-/* SUCCESS */
-.alert-success{
-  background:#ecfeff;
-  border-left:5px solid var(--primary);
-  padding:14px 16px;
-  border-radius:10px;
-  margin-bottom:16px;
-  font-size:.9rem;
-}
 
 /* LOADER */
 .loader{
@@ -102,21 +96,19 @@ button{
   overflow-x:auto;
   animation:fade .35s ease-in-out;
 }
-@keyframes fade{
-  from{opacity:0;transform:translateY(6px)}
-  to{opacity:1;transform:translateY(0)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.85rem;
+  white-space:nowrap;
 }
-
-table{width:100%;border-collapse:collapse;font-size:.85rem}
 th,td{padding:14px 16px;text-align:center}
 
 th{
   background:var(--primary-soft);
   color:var(--primary);
   cursor:pointer;
-  position:relative;
 }
-
 th.sort-asc::after{content:"▲";font-size:.7rem;margin-left:6px}
 th.sort-desc::after{content:"▼";font-size:.7rem;margin-left:6px}
 
@@ -165,9 +157,7 @@ footer{text-align:center;padding:48px 16px;font-size:.8rem;color:var(--muted)}
 
 <div class="search-card">
   <div class="search-box">
-    <input id="telepon" type="tel" maxlength="15"
-      placeholder="Nomor Telepon"
-      inputmode="numeric">
+    <input id="telepon" type="tel" maxlength="15" placeholder="Nomor Telepon" inputmode="numeric">
     <button onclick="cekStatus()">PERIKSA</button>
   </div>
 </div>
@@ -181,22 +171,27 @@ footer{text-align:center;padding:48px 16px;font-size:.8rem;color:var(--muted)}
 </footer>
 
 <script>
+/* ================= FINAL================= */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
 const CACHE_TTL=5*60*1000;
 
-/* KOLOM DISMBUNYIKAN */
-const HIDDEN_COLUMNS = ["UID","Nomor","KODE PART"];
+/* KOLOM HIDE*/
+const HIDDEN_COLUMNS=["UID","Nomor","KODE PART"];
 
 const STATE={data:[],page:1,sort:{key:null,asc:true}};
 const result=document.getElementById("result");
 const telInput=document.getElementById("telepon");
+const btn=document.querySelector("button");
 
+/* INPUT SANITIZATION */
+["input","paste"].forEach(ev=>{
+  telInput.addEventListener(ev,()=>{
+    telInput.value=telInput.value.replace(/\D/g,"");
+  });
+});
 telInput.addEventListener("keydown",e=>{
   if(e.key==="Enter") cekStatus();
-});
-telInput.addEventListener("input",()=>{
-  telInput.value=telInput.value.replace(/\D/g,"");
 });
 
 const showMessage=t=>result.innerHTML=`<div class="message">${t}</div>`;
@@ -216,6 +211,7 @@ const STATUS_MAP={
 
 const normalizeStatus=s=>String(s).toLowerCase().replace(/\s+/g,"").replace("readi","ready");
 
+/* CACHE */
 function getCache(k){
   const r=localStorage.getItem(k);
   if(!r) return null;
@@ -227,16 +223,23 @@ function setCache(k,d){
   localStorage.setItem(k,JSON.stringify({data:d,time:Date.now()}));
 }
 
+/* DEBOUNCE */
 async function cekStatus(){
+  if(btn.disabled) return;
+  btn.disabled=true;
+
   const tel=telInput.value;
-  if(tel.length<8)
+  if(tel.length<8){
+    btn.disabled=false;
     return showMessage("☎ Data tidak sesuai, mohon cek data input");
+  }
 
   const key="cekstatus_"+tel;
   const cached=getCache(key);
   if(cached){
     STATE.data=cached;
     STATE.page=1;
+    btn.disabled=false;
     return render();
   }
 
@@ -250,6 +253,8 @@ async function cekStatus(){
     render();
   }catch{
     showMessage("⚠️ GAGAL MENGAMBIL DATA");
+  }finally{
+    btn.disabled=false;
   }
 }
 
@@ -267,7 +272,6 @@ function render(){
     if(STATE.sort.key===h) cls=STATE.sort.asc?"sort-asc":"sort-desc";
     html+=`<th class="${cls}" onclick="sortBy('${h}')">${h}</th>`;
   });
-
   html+=`</tr></thead><tbody>`;
 
   slice.forEach(r=>{
@@ -275,8 +279,7 @@ function render(){
     headers.forEach(k=>{
       let v=r[k]??"",c="";
       if(k.toLowerCase().includes("tanggal")) v=formatDate(v);
-      if(k.toLowerCase()==="status")
-        c=STATUS_MAP[normalizeStatus(v)]||"";
+      if(k.toLowerCase()==="status") c=STATUS_MAP[normalizeStatus(v)]||"";
       html+=`<td class="${c}">${v}</td>`;
     });
     html+=`</tr>`;
@@ -286,13 +289,17 @@ function render(){
   result.innerHTML=html;
 }
 
+/* SORTING */
 function sortBy(k){
-  STATE.sort.asc = STATE.sort.key===k ? !STATE.sort.asc : true;
+  STATE.sort.asc = STATE.sort.key===k ? !STATE.sort.asc:true;
   STATE.sort.key=k;
+
   STATE.data.sort((a,b)=>{
-    const A=String(a[k]??"");
-    const B=String(b[k]??"");
-    return STATE.sort.asc ? A.localeCompare(B) : B.localeCompare(A);
+    let A=a[k],B=b[k];
+    const dA=new Date(A),dB=new Date(B);
+    if(!isNaN(dA)&&!isNaN(dB)) return STATE.sort.asc?dA-dB:dB-dA;
+    if(!isNaN(A)&&!isNaN(B)) return STATE.sort.asc?A-B:B-A;
+    return STATE.sort.asc?String(A).localeCompare(String(B)):String(B).localeCompare(String(A));
   });
   render();
 }
