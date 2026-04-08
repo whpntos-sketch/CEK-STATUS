@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -65,10 +65,7 @@ button{
   font-weight:600;
   cursor:pointer;
 }
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
+button:disabled{opacity:.6;cursor:not-allowed}
 
 /* CONTENT */
 .container{max-width:1100px;margin:auto;padding:0 16px 64px}
@@ -76,10 +73,17 @@ button:disabled{
 /* MESSAGE */
 .message{text-align:center;padding:32px 0;color:var(--muted);font-weight:500}
 
+/* RESULT META */
+.result-info{
+  text-align:center;
+  font-size:.85rem;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
 /* LOADER */
 .loader{
-  width:40px;
-  height:40px;
+  width:40px;height:40px;
   border:4px solid #e2e8f0;
   border-top:4px solid var(--primary);
   border-radius:50%;
@@ -96,12 +100,7 @@ button:disabled{
   overflow-x:auto;
   animation:fade .35s ease-in-out;
 }
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:.85rem;
-  white-space:nowrap;
-}
+table{width:100%;border-collapse:collapse;font-size:.85rem;white-space:nowrap}
 th,td{padding:14px 16px;text-align:center}
 
 th{
@@ -109,10 +108,17 @@ th{
   color:var(--primary);
   cursor:pointer;
 }
-th.sort-asc::after{content:"▲";font-size:.7rem;margin-left:6px}
-th.sort-desc::after{content:"▼";font-size:.7rem;margin-left:6px}
+th.sort-asc::after{content:"▲";margin-left:6px;font-size:.7rem}
+th.sort-desc::after{content:"▼";margin-left:6px;font-size:.7rem}
 
 tbody tr:hover{background:#f1f5f9}
+
+/* AUTO WRAP KHUSUS */
+td.wrap{
+  white-space:normal;
+  word-break:break-word;
+  text-align:left;
+}
 
 /* STATUS */
 td[class^="status-"]{
@@ -141,6 +147,8 @@ td[class^="status-"]{
 }
 
 footer{text-align:center;padding:48px 16px;font-size:.8rem;color:var(--muted)}
+footer strong{color:var(--primary)}
+
 @media(max-width:600px){
   header h1{font-size:1.6rem}
   .search-box{flex-direction:column}
@@ -171,12 +179,12 @@ footer{text-align:center;padding:48px 16px;font-size:.8rem;color:var(--muted)}
 </footer>
 
 <script>
-/* ================= FINAL================= */
+/* ================= FINAL PRODUCTION ================= */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
 const CACHE_TTL=5*60*1000;
 
-/* KOLOM HIDE*/
+/* KOLOM HIDE */
 const HIDDEN_COLUMNS=["UID","Nomor","KODE PART"];
 
 const STATE={data:[],page:1,sort:{key:null,asc:true}};
@@ -184,15 +192,11 @@ const result=document.getElementById("result");
 const telInput=document.getElementById("telepon");
 const btn=document.querySelector("button");
 
-/* INPUT SANITIZATION */
-["input","paste"].forEach(ev=>{
-  telInput.addEventListener(ev,()=>{
-    telInput.value=telInput.value.replace(/\D/g,"");
-  });
+/* SANITIZATION */
+["input","paste"].forEach(e=>{
+  telInput.addEventListener(e,()=>telInput.value=telInput.value.replace(/\D/g,""));
 });
-telInput.addEventListener("keydown",e=>{
-  if(e.key==="Enter") cekStatus();
-});
+telInput.addEventListener("keydown",e=>e.key==="Enter"&&cekStatus());
 
 const showMessage=t=>result.innerHTML=`<div class="message">${t}</div>`;
 const showLoader=()=>result.innerHTML=`<div class="loader"></div>`;
@@ -208,7 +212,6 @@ const STATUS_MAP={
   backorder:"status-backorder",
   ready:"status-ready"
 };
-
 const normalizeStatus=s=>String(s).toLowerCase().replace(/\s+/g,"").replace("readi","ready");
 
 /* CACHE */
@@ -216,14 +219,11 @@ function getCache(k){
   const r=localStorage.getItem(k);
   if(!r) return null;
   const {data,time}=JSON.parse(r);
-  if(Date.now()-time>CACHE_TTL) return null;
-  return data;
+  return Date.now()-time>CACHE_TTL?null:data;
 }
-function setCache(k,d){
-  localStorage.setItem(k,JSON.stringify({data:d,time:Date.now()}));
-}
+const setCache=(k,d)=>localStorage.setItem(k,JSON.stringify({data:d,time:Date.now()}));
 
-/* DEBOUNCE */
+/* MAIN */
 async function cekStatus(){
   if(btn.disabled) return;
   btn.disabled=true;
@@ -253,9 +253,7 @@ async function cekStatus(){
     render();
   }catch{
     showMessage("⚠️ GAGAL MENGAMBIL DATA");
-  }finally{
-    btn.disabled=false;
-  }
+  }finally{btn.disabled=false}
 }
 
 function render(){
@@ -266,21 +264,24 @@ function render(){
   const start=(STATE.page-1)*ROWS;
   const slice=STATE.data.slice(start,start+ROWS);
 
-  let html=`<div class="table-card"><table><thead><tr>`;
+  let html=`<div class="result-info">Ditemukan <strong>${STATE.data.length}</strong> data</div>`;
+  html+=`<div class="table-card"><table><thead><tr>`;
+
   headers.forEach(h=>{
-    let cls="";
-    if(STATE.sort.key===h) cls=STATE.sort.asc?"sort-asc":"sort-desc";
+    const cls=STATE.sort.key===h?(STATE.sort.asc?"sort-asc":"sort-desc"):"";
     html+=`<th class="${cls}" onclick="sortBy('${h}')">${h}</th>`;
   });
+
   html+=`</tr></thead><tbody>`;
 
   slice.forEach(r=>{
     html+=`<tr>`;
     headers.forEach(k=>{
-      let v=r[k]??"",c="";
-      if(k.toLowerCase().includes("tanggal")) v=formatDate(v);
+      let v=r[k]??"",c="",w="";
+      if(/keterangan|keperluan/i.test(k)) w="wrap";
+      if(/tanggal/i.test(k)) v=formatDate(v);
       if(k.toLowerCase()==="status") c=STATUS_MAP[normalizeStatus(v)]||"";
-      html+=`<td class="${c}">${v}</td>`;
+      html+=`<td class="${c} ${w}">${v}</td>`;
     });
     html+=`</tr>`;
   });
@@ -289,11 +290,9 @@ function render(){
   result.innerHTML=html;
 }
 
-/* SORTING */
 function sortBy(k){
-  STATE.sort.asc = STATE.sort.key===k ? !STATE.sort.asc:true;
+  STATE.sort.asc=STATE.sort.key===k?!STATE.sort.asc:true;
   STATE.sort.key=k;
-
   STATE.data.sort((a,b)=>{
     let A=a[k],B=b[k];
     const dA=new Date(A),dB=new Date(B);
@@ -329,8 +328,7 @@ function statusInfo(){
 }
 
 const y=new Date().getFullYear();
-document.getElementById("year").textContent =
-  y===2026?"2026":`2026 – ${y}`;
+document.getElementById("year").textContent=y===2026?"2026":`2026 – ${y}`;
 </script>
 
 </body>
