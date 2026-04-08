@@ -73,12 +73,14 @@ button:disabled{opacity:.6;cursor:not-allowed}
 /* MESSAGE */
 .message{text-align:center;padding:32px 0;color:var(--muted);font-weight:500}
 
-/* RESULT META */
-.result-info{
-  text-align:center;
-  font-size:.85rem;
-  color:var(--muted);
-  margin-bottom:12px;
+/* SUCCESS */
+.alert-success{
+  background:#ecfeff;
+  border-left:5px solid var(--primary);
+  padding:14px 16px;
+  border-radius:10px;
+  margin-bottom:16px;
+  font-size:.9rem;
 }
 
 /* LOADER */
@@ -113,7 +115,7 @@ th.sort-desc::after{content:"▼";margin-left:6px;font-size:.7rem}
 
 tbody tr:hover{background:#f1f5f9}
 
-/* AUTO WRAP KHUSUS */
+/* WRAP */
 td.wrap{
   white-space:normal;
   word-break:break-word;
@@ -179,33 +181,39 @@ footer strong{color:var(--primary)}
 </footer>
 
 <script>
-/* ================= FINAL PRODUCTION ================= */
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
 const CACHE_TTL=5*60*1000;
 
-/* KOLOM HIDE */
 const HIDDEN_COLUMNS=["UID","Nomor","KODE PART"];
-
 const STATE={data:[],page:1,sort:{key:null,asc:true}};
 const result=document.getElementById("result");
 const telInput=document.getElementById("telepon");
 const btn=document.querySelector("button");
 
-/* SANITIZATION */
+/* INPUT */
 ["input","paste"].forEach(e=>{
   telInput.addEventListener(e,()=>telInput.value=telInput.value.replace(/\D/g,""));
 });
 telInput.addEventListener("keydown",e=>e.key==="Enter"&&cekStatus());
 
-const showMessage=t=>result.innerHTML=`<div class="message">${t}</div>`;
-const showLoader=()=>result.innerHTML=`<div class="loader"></div>`;
+function showMessage(t){
+  result.innerHTML=`<div class="message">${t}</div>`;
+}
+function showLoader(){
+  result.innerHTML=`<div class="loader"></div>`;
+}
+function showSuccess(n){
+  const el=document.createElement("div");
+  el.className="alert-success";
+  el.innerHTML=`📑 <strong>${n}</strong> order ditemukan`;
+  result.prepend(el);
+}
 
 const formatDate=v=>{
   const d=new Date(v);
   return isNaN(d)?v:d.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
 };
-
 const STATUS_MAP={
   selesai:"status-selesai",
   pemesanan:"status-pemesanan",
@@ -223,7 +231,6 @@ function getCache(k){
 }
 const setCache=(k,d)=>localStorage.setItem(k,JSON.stringify({data:d,time:Date.now()}));
 
-/* MAIN */
 async function cekStatus(){
   if(btn.disabled) return;
   btn.disabled=true;
@@ -260,25 +267,25 @@ function render(){
   if(!STATE.data.length)
     return showMessage("📝 Data tidak ditemukan, periksa formulir silakan membuat order");
 
+  result.innerHTML="";
+  showSuccess(STATE.data.length);
+
   const headers=Object.keys(STATE.data[0]).filter(h=>!HIDDEN_COLUMNS.includes(h));
   const start=(STATE.page-1)*ROWS;
   const slice=STATE.data.slice(start,start+ROWS);
 
-  let html=`<div class="result-info">Ditemukan <strong>${STATE.data.length}</strong> data</div>`;
-  html+=`<div class="table-card"><table><thead><tr>`;
-
+  let html=`<div class="table-card"><table><thead><tr>`;
   headers.forEach(h=>{
     const cls=STATE.sort.key===h?(STATE.sort.asc?"sort-asc":"sort-desc"):"";
     html+=`<th class="${cls}" onclick="sortBy('${h}')">${h}</th>`;
   });
-
   html+=`</tr></thead><tbody>`;
 
   slice.forEach(r=>{
     html+=`<tr>`;
     headers.forEach(k=>{
       let v=r[k]??"",c="",w="";
-      if(/keterangan|keperluan/i.test(k)) w="wrap";
+      if(/keperluan|keterangan/i.test(k)) w="wrap";
       if(/tanggal/i.test(k)) v=formatDate(v);
       if(k.toLowerCase()==="status") c=STATUS_MAP[normalizeStatus(v)]||"";
       html+=`<td class="${c} ${w}">${v}</td>`;
@@ -287,7 +294,7 @@ function render(){
   });
 
   html+=`</tbody></table></div>`+pagination()+statusInfo();
-  result.innerHTML=html;
+  result.innerHTML+=html;
 }
 
 function sortBy(k){
@@ -299,7 +306,7 @@ function sortBy(k){
     if(!isNaN(dA)&&!isNaN(dB)) return STATE.sort.asc?dA-dB:dB-dA;
     if(!isNaN(A)&&!isNaN(B)) return STATE.sort.asc?A-B:B-A;
     return STATE.sort.asc?String(A).localeCompare(String(B)):String(B).localeCompare(String(A));
-  });
+    });
   render();
 }
 
