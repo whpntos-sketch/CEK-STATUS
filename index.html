@@ -160,8 +160,8 @@ footer strong{color:var(--primary)}
 <body>
 
 <header>
-  <h1>INFORMASI STATUS ORDER</h1>
-  <p>silakan masukkan data untuk melanjutkan</p>
+  <h1>INFORMASI ORDER</h1>
+  <p>membantu memberikan update informasi status pesanan anda</p>
 </header>
 
 <div class="search-card">
@@ -237,7 +237,7 @@ async function cekStatus(){
   const tel=telInput.value;
   if(tel.length<8){
     btn.disabled=false;
-    return showMessage("☎ Data tidak sesuai, mohon cek data input");
+    return showMessage("☎ Data yang anda cari tidak sesuai, mohon cek data input");
   }
 
   const key="cekstatus_"+tel;
