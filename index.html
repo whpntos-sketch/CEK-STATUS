@@ -166,8 +166,8 @@ footer strong{color:var(--primary)}
 
 <div class="search-card">
   <div class="search-box">
-    <input id="telepon" type="tel" maxlength="15" placeholder="Nomor Telepon" inputmode="numeric">
-    <button onclick="cekStatus()">Life's Good</button>
+    <input id="telepon" type="tel" maxlength="15" placeholder="NOMOR HANDPHONE - Life's Good" inputmode="numeric">
+    <button onclick="cekStatus()">PERIKSA</button>
   </div>
 </div>
 
@@ -182,7 +182,7 @@ footer strong{color:var(--primary)}
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbxlC1eZ1tWIGsYnjfYkKAgsfvnpRAtggw5wubUvszhlsNXHLM2Y_0bnqSP_QhgrZlAWdw/exec";
 const ROWS=5;
-const CACHE_TTL=5*60*1000;
+const CACHE_TTL=3*60*1000;
 
 const HIDDEN_COLUMNS=["UID","Nomor","KODE PART"];
 const STATE={data:[],page:1,sort:{key:null,asc:true}};
