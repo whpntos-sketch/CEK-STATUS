@@ -161,7 +161,7 @@ footer strong{color:var(--primary)}
 
 <header>
   <h1>INFORMASI ORDER</h1>
-  <p>Data Progres Order & Update Detail Status Pesanan </p>
+  <p>data progres order dan update status pesanan </p>
 </header>
 
 <div class="search-card">
@@ -176,7 +176,7 @@ footer strong{color:var(--primary)}
 </div>
 
 <footer>
-  © <span id="year"></span> · UnOfficial by <strong>Madētha</strong>
+  © Copyright <span id="year"></span> · UnOfficial by <strong>Madētha</strong>
 </footer>
 
 <script>
@@ -272,7 +272,7 @@ function getActiveStatuses(){
 
 function render(){
   if(!STATE.data.length)
-    return showMessage("📝 Data tidak ditemukan, periksa formulir silakan membuat order");
+    return showMessage("📝 Data tidak ditemukan, periksa formulir atau silakan membuat order");
 
   result.innerHTML="";
   showSuccess(STATE.data.length);
